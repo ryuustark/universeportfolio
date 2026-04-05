@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skills Constellation | Professional Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-bg: #0a0a0f;
+  --color-border: rgba(204,0,0,0.25);
+  --color-text: #e8d8f0;
+  --color-text-muted: #a080b0;
+  --color-accent: #cc0000;
+  --color-accent-glow: rgba(204,0,0,0.5);
+  --color-accent-dark: #770000;
+  --color-purple: #7700bb;
+  --color-purple-dark: #440066;
+  --font-display: "Cinzel Decorative","Cinzel",serif;
+  --font-body: "Cinzel",serif;
+  --text-xs: clamp(0.65rem,0.6rem + 0.2vw,0.75rem);
+  --text-sm: clamp(0.75rem,0.7rem + 0.25vw,0.875rem);
+  --text-base: clamp(0.875rem,0.8rem + 0.3vw,1rem);
+  --text-lg: clamp(1rem,0.9rem + 0.5vw,1.25rem);
+  --text-xl: clamp(1.25rem,1rem + 1vw,1.75rem);
+  --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem; --space-6: 1.5rem;
+  --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px; --radius-full: 9999px;
+  --transition: 280ms cubic-bezier(0.16,1,0.3,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-font-smoothing:antialiased;}
+body{
+  min-height:100dvh;
+  font-family:var(--font-body);
+  background:var(--color-bg);
+  color:var(--color-text);
+  overflow:hidden;
+  display:flex;
+  flex-direction:row;
+}
+.bg-nebula{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 50%,rgba(70,0,40,0.4) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 40% at 20% 30%,rgba(80,0,60,0.3) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 50% at 80% 70%,rgba(40,0,80,0.3) 0%,transparent 60%),
+    var(--color-bg);
+}
+.star-field{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.star-field::before,.star-field::after{
+  content:'';position:absolute;inset:0;
+  background-image:
+    radial-gradient(circle,rgba(255,255,255,0.9) 1px,transparent 1px),
+    radial-gradient(circle,rgba(220,100,100,0.7) 1px,transparent 1px),
+    radial-gradient(circle,rgba(180,100,180,0.5) 0.5px,transparent 0.5px);
+  background-size:300px 200px,200px 300px,400px 250px;
+  background-position:0 0,50px 80px,120px 30px;
+  animation:twinkle 8s ease-in-out infinite alternate;
+}
+.star-field::after{
+  background-size:250px 350px,350px 150px,180px 400px;
+  background-position:30px 20px,100px 150px,200px 60px;
+  animation-delay:-4s;animation-duration:10s;
+}
+@keyframes twinkle{0%{opacity:0.6}50%{opacity:1}100%{opacity:0.7}}
+
+/* Side Menu */
+.side-menu{
+  position:fixed;left:0;top:0;width:220px;height:100dvh;
+  background:linear-gradient(135deg,rgba(10,5,20,0.95),rgba(5,0,15,0.95));
+  border-right:2px solid var(--color-border);
+  backdrop-filter:blur(12px);
+  z-index:50;
+  display:flex;flex-direction:column;
+  padding:var(--space-6);gap:var(--space-6);
+  overflow-y:auto;
+}
+.menu-profile{
+  display:flex;flex-direction:column;gap:var(--space-3);
+  padding-bottom:var(--space-4);
+  border-bottom:1px solid var(--color-border);
+}
+.profile-title{
+  font-family:var(--font-display);
+  font-size:var(--text-lg);
+  color:var(--color-accent);
+  letter-spacing:0.1em;
+  text-shadow:0 0 15px var(--color-accent-glow);
+}
+.profile-subtitle{
+  font-size:var(--text-sm);
+  color:var(--color-text-muted);
+  letter-spacing:0.05em;
+}
+.menu-contacts{
+  display:flex;flex-direction:column;gap:var(--space-3);
+}
+.contact-item{
+  display:flex;align-items:center;gap:var(--space-3);
+  padding:var(--space-2) var(--space-3);
+  background:rgba(204,0,0,0.08);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-sm);
+  text-decoration:none;
+  color:var(--color-text);
+  transition:all var(--transition);
+  font-size:var(--text-xs);
+  cursor:pointer;
+}
+.contact-item:hover{
+  background:rgba(204,0,0,0.2);
+  border-color:var(--color-accent);
+  color:var(--color-accent);
+  box-shadow:0 0 12px var(--color-accent-glow);
+}
+.contact-icon{
+  font-size:1.2rem;
+}
+
+.ui-wrapper{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;align-items:center;
+  width:calc(100% - 220px);height:100dvh;
+  margin-left:220px;
+  padding:var(--space-4);gap:var(--space-3);
+}
+.header{
+  width:100%;display:flex;align-items:center;justify-content:space-between;
+  padding:var(--space-3) var(--space-6);
+  background:linear-gradient(135deg,rgba(40,10,25,0.9),rgba(15,5,20,0.9));
+  border:1px solid var(--color-border);border-radius:var(--radius-md);
+  backdrop-filter:blur(12px);
+}
+.header-title{
+  font-family:var(--font-display);font-size:var(--text-xl);
+  color:var(--color-accent);letter-spacing:0.1em;
+  text-shadow:0 0 20px var(--color-accent-glow),0 0 40px rgba(204,0,0,0.2);
+}
+.header-character{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+.char-name{font-size:var(--text-sm);color:var(--color-text);letter-spacing:0.08em;}
+.char-level{font-size:var(--text-xs);color:var(--color-accent);letter-spacing:0.06em;}
+.perk-points{display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-sm);color:var(--color-text);}
+.perk-diamond{
+  width:10px;height:10px;background:var(--color-accent);
+  clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);
+  box-shadow:0 0 8px var(--color-accent-glow);
+}
+.main-area{display:flex;flex:1;width:100%;gap:var(--space-4);min-height:0;padding-bottom:var(--space-4);flex-direction:column;position:relative;}
+/* ── Skill Wheel ─────────────────────────────── */
+.skill-wheel-wrap{
+  flex:1;width:100%;position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+}
+.wheel-scene{
+  perspective:600px;perspective-origin:50% 50%;
+  width:100%;height:120px;overflow:hidden;
+}
+.wheel-rotor{
+  width:100%;height:100%;position:relative;
+  transform-style:preserve-3d;
+  transition:transform 600ms ease;
+  transform:rotateY(0deg);
+}
+.wheel-item{
+  position:absolute;top:50%;left:50%;
+  width:140px;height:58px;
+  margin-top:-29px;margin-left:-70px;
+  display:flex;flex-direction:column;align-items:flex-start;
+  gap:3px;padding:8px 12px;
+  background:rgba(30,10,20,0.7);border:1px solid rgba(204,0,0,0.2);
+  border-radius:4px;cursor:pointer;
+  transition:opacity var(--transition),color var(--transition),border-color var(--transition),box-shadow var(--transition);
+  user-select:none;backface-visibility:hidden;
+}
+.wheel-item:hover{border-color:rgba(204,0,0,0.45);background:rgba(50,15,30,0.85);}
+.wheel-item.active{
+  border-color:#cc0000;background:rgba(60,10,20,0.95);
+  box-shadow:0 0 18px rgba(204,0,0,0.4),inset 0 0 10px rgba(204,0,0,0.08);
+}
+.wi-name{
+  font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;
+  color:#e8d8f0;transition:color var(--transition);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;
+}
+.wheel-item.active .wi-name{color:#cc0000;text-shadow:0 0 10px rgba(204,0,0,0.7);}
+.wi-bar{width:100%;height:2px;background:rgba(120,0,60,0.3);border-radius:9999px;overflow:hidden;}
+.wi-fill{height:100%;background:#804040;border-radius:9999px;transition:background var(--transition);}
+.wheel-item.active .wi-fill{background:#cc0000;}
+.wi-level{font-size:0.65rem;color:#a080b0;letter-spacing:0.06em;transition:color var(--transition);}
+.wheel-item.active .wi-level{color:#cc0000;}
+.wheel-fade-top,.wheel-fade-bottom{position:absolute;left:0;right:0;height:60px;pointer-events:none;z-index:2;}
+.wheel-fade-top{top:0;background:linear-gradient(to bottom,#0a0a0f 0%,transparent 100%);}
+.wheel-fade-bottom{bottom:0;background:linear-gradient(to top,#0a0a0f 0%,transparent 100%);}
+.constellation-panel{
+  position:absolute;left:0;right:0;bottom:0;
+  height:60%;z-index:20;
+  background:linear-gradient(to bottom,rgba(10,5,15,0.85) 0%,rgba(10,5,15,0.97) 30%);
+  border-top:1px solid var(--color-border);border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+  overflow:hidden;backdrop-filter:blur(16px);
+  transform:translateY(100%);opacity:0;pointer-events:none;
+  transition:transform 500ms cubic-bezier(0.16,1,0.3,1),opacity 400ms ease;
+}
+.constellation-panel.revealed{
+  transform:translateY(0);opacity:1;pointer-events:auto;
+}
+.constellation-title{
+  position:absolute;top:var(--space-4);left:50%;transform:translateX(-50%);
+  font-family:var(--font-display);font-size:var(--text-xl);
+  color:var(--color-accent);letter-spacing:0.12em;
+  text-shadow:0 0 24px var(--color-accent-glow);
+  white-space:nowrap;z-index:2;pointer-events:none;
+}
+.constellation-level{
+  position:absolute;top:calc(var(--space-4) + 2rem);left:50%;transform:translateX(-50%);
+  font-size:var(--text-xs);color:var(--color-text-muted);
+  letter-spacing:0.15em;text-transform:uppercase;z-index:2;pointer-events:none;
+}
+.constellation-svg{position:absolute;inset:0;width:100%;height:100%;}
+.node{cursor:pointer;}
+.info-panel{
+  position:absolute;bottom:var(--space-4);left:50%;
+  transform:translateX(-50%) translateY(8px);
+  min-width:280px;max-width:360px;
+  padding:var(--space-4) var(--space-6);
+  background:linear-gradient(135deg,rgba(20,8,20,0.97),rgba(10,5,15,0.98));
+  border:1px solid rgba(204,0,0,0.5);border-radius:var(--radius-md);
+  backdrop-filter:blur(16px);z-index:10;
+  text-align:center;opacity:0;
+  transition:opacity var(--transition),transform var(--transition);
+  pointer-events:none;
+  box-shadow:0 4px 32px rgba(0,0,0,0.6),0 0 20px rgba(204,0,0,0.12);
+}
+.info-panel.visible{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;}
+.info-panel-name{
+  font-family:var(--font-display);font-size:var(--text-lg);
+  color:var(--color-accent);letter-spacing:0.08em;margin-bottom:var(--space-2);
+  text-shadow:0 0 16px var(--color-accent-glow);
+}
+.info-panel-desc{font-size:var(--text-sm);color:var(--color-text);line-height:1.6;margin-bottom:var(--space-3);max-width:50ch;}
+.info-panel-rank{font-size:var(--text-xs);color:var(--color-text-muted);letter-spacing:0.12em;text-transform:uppercase;}
+.gold-sep{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--color-accent),transparent);margin:var(--space-2) auto;opacity:0.6;}
+.info-panel-btn{
+  margin-top:var(--space-3);padding:var(--space-2) var(--space-6);
+  background:linear-gradient(135deg,rgba(204,0,0,0.15),rgba(204,0,0,0.08));
+  border:1px solid rgba(204,0,0,0.5);border-radius:var(--radius-sm);
+  color:var(--color-accent);font-family:var(--font-body);
+  font-size:var(--text-xs);letter-spacing:0.15em;text-transform:uppercase;
+  cursor:pointer;transition:all var(--transition);
+}
+.info-panel-btn:hover{background:rgba(204,0,0,0.25);box-shadow:0 0 12px rgba(204,0,0,0.3);}
+.info-panel-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.bottom-bar{
+  position:absolute;bottom:0;left:0;right:0;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:var(--space-2) var(--space-6);
+  background:rgba(10,5,15,0.9);border-top:1px solid var(--color-border);
+  font-size:var(--text-xs);color:var(--color-text-muted);
+  letter-spacing:0.1em;text-transform:uppercase;z-index:5;
+}
+.key-hint{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:1px var(--space-2);
+  background:rgba(80,0,60,0.7);border:1px solid rgba(204,0,0,0.3);
+  border-radius:3px;font-size:var(--text-xs);margin-right:4px;
+}
+@media (max-width:768px){
+  .side-menu{width:100%;height:auto;flex-direction:row;border-right:none;border-bottom:2px solid var(--color-border);padding:var(--space-3);}
+  .menu-profile,.menu-contacts{flex-direction:row;gap:var(--space-4);}
+  .ui-wrapper{width:100%;margin-left:0;}
+  .skill-wheel-wrap{height:90px;}
+  .wheel-scene{height:90px;}
+  .wheel-item{width:100px;height:50px;margin-top:-25px;margin-left:-50px;padding:6px 8px;}
+  .wi-name{font-size:0.58rem;}
+  body{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+<div class="bg-nebula"></div>
+<div class="star-field"></div>
+
+<!-- Side Menu -->
+<div class="side-menu">
+  <div class="menu-profile">
+    <div class="profile-title">Dragonborn</div>
+    <div class="profile-subtitle">Skill Master</div>
+  </div>
+
+  <div class="menu-contacts">
+    <a href="mailto:your.email@example.com" class="contact-item" title="Email">
+      <span class="contact-icon">✉</span>
+      <span>Email</span>
+    </a>
+    <a href="https://linkedin.com" target="_blank" class="contact-item" title="LinkedIn">
+      <span class="contact-icon">in</span>
+      <span>LinkedIn</span>
+    </a>
+    <a href="https://instagram.com" target="_blank" class="contact-item" title="Instagram">
+      <span class="contact-icon">📷</span>
+      <span>Instagram</span>
+    </a>
+  </div>
+</div>
+
+<div class="ui-wrapper">
+  <header class="header">
+    <div class="header-title">⚔ Skills Constellation ⚔</div>
+    <div class="perk-points">
+      <div class="perk-diamond"></div>
+      <span id="perk-count">5 Skills Unlocked</span>
+    </div>
+    <div class="header-character">
+      <span class="char-name">Professional</span>
+      <span class="char-level">Master Level</span>
+    </div>
+  </header>
+
+  <div class="main-area">
+    <div class="skill-wheel-wrap" aria-label="Skill trees" role="navigation">
+      <div class="wheel-scene">
+        <div class="wheel-rotor" id="wheel-rotor"></div>
+      </div>
+      <div class="wheel-fade-top"></div>
+      <div class="wheel-fade-bottom"></div>
+    </div>
+
+    <div class="constellation-panel" id="constellation-panel">
+      <div class="constellation-title" id="tree-title">Salesforce</div>
+      <div class="constellation-level" id="tree-level">Skill Level: 90</div>
+      <svg class="constellation-svg" id="constellation-svg" viewBox="0 0 600 500" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="glow-accent" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <radialGradient id="bg-radial" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(60,20,40,0.4)"/>
+            <stop offset="100%" stop-color="rgba(10,5,15,0)"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="300" cy="250" rx="250" ry="200" fill="url(#bg-radial)"/>
+        <g id="lines-layer"></g>
+        <g id="nodes-layer"></g>
+      </svg>
+      <div class="info-panel" id="info-panel">
+        <div class="info-panel-name" id="info-name">3D Design</div>
+        <div class="gold-sep"></div>
+        <div class="info-panel-desc" id="info-desc">Master of digital creation and model design.</div>
+        <div class="info-panel-rank" id="info-rank">Expert · Advanced</div>
+        <button class="info-panel-btn" id="info-btn" onclick="spendPerk()">Learn More</button>
+      </div>
+      <div class="bottom-bar">
+        <span><span class="key-hint">Click</span>Explore</span>
+        <span><span class="key-hint">Tab</span>Switch</span>
+        <span><span class="key-hint">Hover</span>Info</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const trees = {
+  salesforce:{title:"Salesforce",level:90,nodes:[
+    {id:"crm",x:300,y:440,label:"CRM",size:18,master:true,unlocked:true,desc:"Master of Salesforce CRM platform and administration.",rank:"Expert · Salesforce 90",parents:[]},
+    {id:"config",x:180,y:340,label:"Configuration",size:14,unlocked:true,desc:"Deep configuration of Salesforce org and customization.",rank:"Expert · Config",parents:["crm"]},
+    {id:"apex",x:420,y:340,label:"Apex",size:14,unlocked:true,desc:"Custom code development in Apex programming language.",rank:"Expert · Apex",parents:["crm"]},
+    {id:"workflows",x:100,y:240,label:"Workflows",size:12,unlocked:true,desc:"Automation using Salesforce workflows and flows.",rank:"Expert · Automation",parents:["config"]},
+    {id:"reporting",x:300,y:250,label:"Reporting",size:12,unlocked:true,desc:"Advanced reporting and analytics in Salesforce.",rank:"Expert · Reports",parents:["config","apex"]},
+    {id:"integ",x:500,y:240,label:"Integration",size:12,unlocked:false,desc:"Integrating Salesforce with external systems.",rank:"Advanced · Integration",parents:["apex"]},
+    {id:"security",x:150,y:130,label:"Security",size:13,unlocked:false,desc:"Salesforce security and compliance management.",rank:"Advanced · Security",parents:["workflows","reporting"]},
+    {id:"deployment",x:480,y:110,label:"Deployment",size:13,unlocked:false,desc:"Release management and deployment strategies.",rank:"Advanced · Deploy",parents:["reporting","integ"]},
+    {id:"salesforce_master",x:300,y:50,label:"Salesforce Master",size:18,master:true,unlocked:false,desc:"Complete mastery of Salesforce platform.",rank:"Master · Salesforce",parents:["security","deployment"]},
+  ]},
+  ai_explorations:{title:"AI Explorations",level:10,nodes:[
+    {id:"ai_base",x:300,y:440,label:"AI Journey",size:18,master:true,unlocked:true,desc:"Beginning exploration of artificial intelligence technologies.",rank:"Beginner · AI 10",parents:[]},
+    {id:"llm",x:180,y:340,label:"LLMs",size:14,unlocked:false,desc:"Learning about large language models.",rank:"Learning · LLM",parents:["ai_base"]},
+    {id:"nlp",x:420,y:340,label:"NLP",size:14,unlocked:false,desc:"Natural language processing fundamentals.",rank:"Learning · NLP",parents:["ai_base"]},
+    {id:"ml_basics",x:100,y:240,label:"ML Basics",size:12,unlocked:false,desc:"Machine learning foundations and concepts.",rank:"Learning · ML",parents:["llm"]},
+    {id:"data_ai",x:300,y:250,label:"Data for AI",size:12,unlocked:false,desc:"Data preparation for AI applications.",rank:"Learning · Data",parents:["llm","nlp"]},
+    {id:"ethics",x:500,y:240,label:"AI Ethics",size:12,unlocked:false,desc:"Ethics and responsible AI principles.",rank:"Learning · Ethics",parents:["nlp"]},
+    {id:"tools",x:150,y:130,label:"AI Tools",size:13,unlocked:false,desc:"Practical AI tools and frameworks.",rank:"Learning · Tools",parents:["ml_basics","data_ai"]},
+    {id:"projects",x:480,y:110,label:"AI Projects",size:13,unlocked:false,desc:"Building experimental AI projects.",rank:"Learning · Projects",parents:["data_ai","ethics"]},
+    {id:"ai_master",x:300,y:50,label:"AI Expert",size:18,master:true,unlocked:false,desc:"Advanced AI knowledge and application.",rank:"Master · AI",parents:["tools","projects"]},
+  ]},
+  devops:{title:"DevOps & Deployment",level:30,nodes:[
+    {id:"deploy",x:300,y:440,label:"Deployment",size:18,master:true,unlocked:true,desc:"Managing application deployment pipelines and releases.",rank:"Intermediate · DevOps 30",parents:[]},
+    {id:"docker",x:180,y:340,label:"Docker",size:14,unlocked:false,desc:"Containerization and container orchestration.",rank:"Intermediate · Docker",parents:["deploy"]},
+    {id:"ci_cd",x:420,y:340,label:"CI/CD",size:14,unlocked:false,desc:"Continuous integration and deployment automation.",rank:"Intermediate · CI/CD",parents:["deploy"]},
+    {id:"infrastructure",x:100,y:240,label:"Infrastructure",size:12,unlocked:false,desc:"Managing cloud infrastructure and services.",rank:"Intermediate · IaC",parents:["docker"]},
+    {id:"monitoring",x:300,y:250,label:"Monitoring",size:12,unlocked:false,desc:"System monitoring and performance tracking.",rank:"Intermediate · Monitor",parents:["docker","ci_cd"]},
+    {id:"k8s",x:500,y:240,label:"Kubernetes",size:12,unlocked:false,desc:"Orchestrating containerized applications at scale.",rank:"Intermediate · K8s",parents:["ci_cd"]},
+    {id:"sec",x:150,y:130,label:"Security",size:13,unlocked:false,desc:"Infrastructure security and hardening.",rank:"Intermediate · Sec",parents:["infrastructure","monitoring"]},
+    {id:"automation",x:480,y:110,label:"Automation",size:13,unlocked:false,desc:"Scripting and automation of operations tasks.",rank:"Intermediate · Auto",parents:["monitoring","k8s"]},
+    {id:"devops_master",x:300,y:50,label:"DevOps Master",size:18,master:true,unlocked:false,desc:"Complete mastery of DevOps practices.",rank:"Master · DevOps",parents:["sec","automation"]},
+  ]},
+  "3dmodel":{title:"3D Modeling",level:20,nodes:[
+    {id:"modeling",x:300,y:440,label:"3D Design",size:18,master:true,unlocked:true,desc:"Creating detailed digital objects and models.",rank:"Beginner · 3D 20",parents:[]},
+    {id:"blender",x:180,y:340,label:"Blender",size:14,unlocked:true,desc:"Advanced modeling and rendering in Blender.",rank:"Expert · Blender",parents:["modeling"]},
+    {id:"sculpting",x:420,y:340,label:"Sculpting",size:14,unlocked:true,desc:"Digital sculpting for organic forms and details.",rank:"Advanced · Sculpt",parents:["modeling"]},
+    {id:"materials",x:100,y:240,label:"Materials",size:12,unlocked:true,desc:"Creating realistic materials and textures.",rank:"Advanced · Materials",parents:["blender"]},
+    {id:"rigging",x:300,y:250,label:"Rigging",size:12,unlocked:true,desc:"Setting up models for animation and deformation.",rank:"Advanced · Rig",parents:["blender","sculpting"]},
+    {id:"rendering",x:500,y:240,label:"Rendering",size:12,unlocked:false,desc:"High-quality rendering and visualization.",rank:"Advanced · Render",parents:["sculpting"]},
+    {id:"animation",x:150,y:130,label:"Animation",size:13,unlocked:false,desc:"Character and object animation techniques.",rank:"Advanced · Anim",parents:["materials","rigging"]},
+    {id:"vfx",x:480,y:110,label:"VFX & FX",size:13,unlocked:false,desc:"Special effects and particle systems.",rank:"Advanced · VFX",parents:["rigging","rendering"]},
+    {id:"model_master",x:300,y:50,label:"3D Master",size:18,master:true,unlocked:false,desc:"Complete mastery of 3D modeling.",rank:"Master · 3D",parents:["animation","vfx"]},
+  ]},
+  "3dprint":{title:"3D Printing",level:50,nodes:[
+    {id:"printing",x:300,y:440,label:"3D Printing",size:18,master:true,unlocked:true,desc:"Bringing digital designs to physical reality.",rank:"Intermediate · Printing 50",parents:[]},
+    {id:"fdm",x:180,y:340,label:"FDM",size:14,unlocked:true,desc:"Fused Deposition Modeling and printer management.",rank:"Expert · FDM",parents:["printing"]},
+    {id:"slicing",x:420,y:340,label:"Slicing",size:14,unlocked:true,desc:"Optimizing models for print with slicing software.",rank:"Expert · Slicing",parents:["printing"]},
+    {id:"materials_print",x:100,y:240,label:"Materials",size:12,unlocked:true,desc:"Understanding materials: PLA, ABS, TPU, and more.",rank:"Expert · Materials",parents:["fdm"]},
+    {id:"support",x:300,y:250,label:"Support Design",size:12,unlocked:true,desc:"Designing and optimizing support structures.",rank:"Expert · Support",parents:["fdm","slicing"]},
+    {id:"resin",x:500,y:240,label:"Resin Print",size:12,unlocked:false,desc:"Resin 3D printing techniques and materials.",rank:"Advanced · Resin",parents:["slicing"]},
+    {id:"post_process",x:150,y:130,label:"Post-Proc",size:13,unlocked:false,desc:"Finishing and post-processing printed parts.",rank:"Advanced · Finish",parents:["materials_print","support"]},
+    {id:"quality",x:480,y:110,label:"Quality Control",size:13,unlocked:false,desc:"Ensuring quality and troubleshooting prints.",rank:"Advanced · QC",parents:["support","resin"]},
+    {id:"print_master",x:300,y:50,label:"Print Master",size:18,master:true,unlocked:false,desc:"Complete mastery of 3D printing.",rank:"Master · Printing",parents:["post_process","quality"]},
+  ]},
+  painting:{title:"Painting & Art",level:30,nodes:[
+    {id:"painting_base",x:300,y:440,label:"Painting",size:18,master:true,unlocked:true,desc:"Creating stunning visual art and paintings.",rank:"Intermediate · Art 30",parents:[]},
+    {id:"traditional",x:180,y:340,label:"Traditional",size:14,unlocked:true,desc:"Acrylic, oil, and watercolor painting techniques.",rank:"Advanced · Traditional",parents:["painting_base"]},
+    {id:"digital_art",x:420,y:340,label:"Digital Art",size:14,unlocked:true,desc:"Digital painting and illustration.",rank:"Advanced · Digital",parents:["painting_base"]},
+    {id:"composition",x:100,y:240,label:"Composition",size:12,unlocked:true,desc:"Mastering color theory and composition.",rank:"Advanced · Comp",parents:["traditional"]},
+    {id:"technique",x:300,y:250,label:"Technique",size:12,unlocked:true,desc:"Advanced painting techniques and methods.",rank:"Advanced · Technique",parents:["traditional","digital_art"]},
+    {id:"portraiture",x:500,y:240,label:"Portraiture",size:12,unlocked:false,desc:"Portrait painting and figure work.",rank:"Intermediate · Portrait",parents:["digital_art"]},
+    {id:"landscape",x:150,y:130,label:"Landscapes",size:13,unlocked:false,desc:"Landscape and environment painting.",rank:"Intermediate · Land",parents:["composition","technique"]},
+    {id:"concept_art",x:480,y:110,label:"Concept Art",size:13,unlocked:false,desc:"Concept art and character design.",rank:"Intermediate · Concept",parents:["technique","portraiture"]},
+    {id:"art_master",x:300,y:50,label:"Art Master",size:18,master:true,unlocked:false,desc:"Complete mastery of visual arts.",rank:"Master · Art",parents:["landscape","concept_art"]},
+  ]},
+  notion:{title:"Notion Management",level:1,nodes:[
+    {id:"notion_base",x:300,y:440,label:"Notion",size:18,master:true,unlocked:false,desc:"Building and managing complex Notion workspaces.",rank:"Beginner · Notion 1",parents:[]},
+    {id:"databases",x:180,y:340,label:"Databases",size:14,unlocked:true,desc:"Designing Notion databases and relations.",rank:"Expert · DB Design",parents:["notion_base"]},
+    {id:"templates",x:420,y:340,label:"Templates",size:14,unlocked:true,desc:"Creating reusable templates and systems.",rank:"Expert · Templates",parents:["notion_base"]},
+    {id:"views",x:100,y:240,label:"Views",size:12,unlocked:true,desc:"Master of different views and filtering.",rank:"Expert · Views",parents:["databases"]},
+    {id:"automation",x:300,y:250,label:"Automation",size:12,unlocked:true,desc:"Using buttons and integrations for automation.",rank:"Advanced · Auto",parents:["databases","templates"]},
+    {id:"api_notion",x:500,y:240,label:"API",size:12,unlocked:false,desc:"Notion API integration and scripting.",rank:"Advanced · API",parents:["templates"]},
+    {id:"teamwork",x:150,y:130,label:"Teamwork",size:13,unlocked:false,desc:"Collaborative workspaces and team management.",rank:"Advanced · Team",parents:["views","automation"]},
+    {id:"dashboard",x:480,y:110,label:"Dashboards",size:13,unlocked:false,desc:"Creating dashboards and reporting systems.",rank:"Advanced · Dashboard",parents:["automation","api_notion"]},
+    {id:"notion_master",x:300,y:50,label:"Notion Master",size:18,master:true,unlocked:false,desc:"Complete mastery of Notion systems.",rank:"Master · Notion",parents:["teamwork","dashboard"]},
+  ]},
+  org:{title:"Organization & Planning",level:1,nodes:[
+    {id:"organize",x:300,y:440,label:"Organization",size:18,master:true,unlocked:false,desc:"Expert in systems design and project management.",rank:"Beginner · Org 1",parents:[]},
+    {id:"project_mgmt",x:180,y:340,label:"Project Mgmt",size:14,unlocked:true,desc:"Managing complex projects and timelines.",rank:"Expert · PM",parents:["organize"]},
+    {id:"workflow",x:420,y:340,label:"Workflows",size:14,unlocked:true,desc:"Designing streamlined and efficient workflows.",rank:"Expert · Workflow",parents:["organize"]},
+    {id:"planning",x:100,y:240,label:"Planning",size:12,unlocked:true,desc:"Strategic planning and goal setting.",rank:"Expert · Planning",parents:["project_mgmt"]},
+    {id:"systems",x:300,y:250,label:"Systems",size:12,unlocked:true,desc:"Building organizational systems and processes.",rank:"Expert · Systems",parents:["project_mgmt","workflow"]},
+    {id:"delegation",x:500,y:240,label:"Delegation",size:12,unlocked:false,desc:"Effective task delegation and team coordination.",rank:"Advanced · Delegate",parents:["workflow"]},
+    {id:"time_mgmt",x:150,y:130,label:"Time Mgmt",size:13,unlocked:false,desc:"Time management and productivity optimization.",rank:"Advanced · Time",parents:["planning","systems"]},
+    {id:"leadership",x:480,y:110,label:"Leadership",size:13,unlocked:false,desc:"Leadership and team development skills.",rank:"Advanced · Lead",parents:["systems","delegation"]},
+    {id:"org_master",x:300,y:50,label:"Org Master",size:18,master:true,unlocked:false,desc:"Complete mastery of organization and planning.",rank:"Master · Org",parents:["time_mgmt","leadership"]},
+  ]},
+  blog:{title:"Blog & Writing",level:1,nodes:[
+    {id:"blog_base",x:300,y:440,label:"Blog",size:18,master:true,unlocked:false,desc:"Sharing thoughts and insights through writing.",rank:"Beginner · Blog 1",parents:[]},
+    {id:"writing",x:180,y:340,label:"Writing",size:14,unlocked:false,desc:"Crafting engaging blog content.",rank:"Learning · Writing",parents:["blog_base"]},
+    {id:"strategy",x:420,y:340,label:"Strategy",size:14,unlocked:false,desc:"Content strategy and planning.",rank:"Learning · Strategy",parents:["blog_base"]},
+    {id:"storytelling",x:100,y:240,label:"Storytelling",size:12,unlocked:false,desc:"Crafting compelling narratives.",rank:"Learning · Story",parents:["writing"]},
+    {id:"engagement",x:300,y:250,label:"Engagement",size:12,unlocked:false,desc:"Building audience engagement.",rank:"Learning · Engage",parents:["writing","strategy"]},
+    {id:"seo",x:500,y:240,label:"SEO",size:12,unlocked:false,desc:"Search engine optimization for content.",rank:"Learning · SEO",parents:["strategy"]},
+    {id:"multimedia",x:150,y:130,label:"Multimedia",size:13,unlocked:false,desc:"Incorporating multimedia in posts.",rank:"Learning · Media",parents:["storytelling","engagement"]},
+    {id:"community",x:480,y:110,label:"Community",size:13,unlocked:false,desc:"Building and managing a blog community.",rank:"Learning · Community",parents:["engagement","seo"]},
+    {id:"blog_master",x:300,y:50,label:"Blog Master",size:18,master:true,unlocked:false,desc:"Complete mastery of blogging.",rank:"Master · Blog",parents:["multimedia","community"]},
+  ]}
+};
+
+let currentTree="salesforce",selectedNode=null,perkPoints=3;
+
+// 3D Wheel Configuration
+const WHEEL_ITEMS=[
+  {key:"salesforce",label:"Salesforce",level:90},
+  {key:"ai_explorations",label:"AI Explorations",level:10},
+  {key:"devops",label:"DevOps",level:30},
+  {key:"3dmodel",label:"3D Model",level:20},
+  {key:"3dprint",label:"3D Print",level:50},
+  {key:"painting",label:"Painting",level:30},
+  {key:"notion",label:"Notion",level:1},
+  {key:"org",label:"Organize",level:1},
+  {key:"blog",label:"Blog",level:1}
+];
+const WHEEL_COUNT=WHEEL_ITEMS.length;
+const WHEEL_STEP=360/WHEEL_COUNT;
+const WHEEL_RADIUS=200;
+let wheelCurrentIndex=0;
+let wheelAngle=0;
+let scrollLocked=false;
+
+function starPoints(cx,cy,outerR,innerR,pts){
+  let p=[];
+  for(let i=0;i<pts*2;i++){
+    const a=(i*Math.PI)/pts-Math.PI/2,r=i%2===0?outerR:innerR;
+    p.push(`${cx+r*Math.cos(a)},${cy+r*Math.sin(a)}`);
+  }
+  return p.join(" ");
+}
+
+function renderTree(key){
+  const tree=trees[key];
+  const ll=document.getElementById("lines-layer");
+  const nl=document.getElementById("nodes-layer");
+  ll.innerHTML="";nl.innerHTML="";
+  document.getElementById("tree-title").textContent=tree.title;
+  document.getElementById("tree-level").textContent="Skill Level: "+tree.level;
+  const map={};
+  tree.nodes.forEach(n=>map[n.id]=n);
+  // Lines
+  tree.nodes.forEach(n=>{
+    n.parents.forEach(pid=>{
+      const p=map[pid];if(!p)return;
+      const active=n.unlocked&&p.unlocked;
+      const line=document.createElementNS("http://www.w3.org/2000/svg","line");
+      line.setAttribute("x1",p.x);line.setAttribute("y1",p.y);
+      line.setAttribute("x2",n.x);line.setAttribute("y2",n.y);
+      line.setAttribute("stroke",active?"rgba(204,0,0,0.65)":"rgba(120,0,60,0.25)");
+      line.setAttribute("stroke-width",active?"2":"1.5");
+      if(!active)line.setAttribute("stroke-dasharray","5,4");
+      ll.appendChild(line);
+    });
+  });
+  // Nodes
+  tree.nodes.forEach(n=>{
+    const g=document.createElementNS("http://www.w3.org/2000/svg","g");
+    g.setAttribute("transform",`translate(${n.x},${n.y})`);
+    g.style.cursor="pointer";
+    g.addEventListener("mouseenter",()=>showInfo(n));
+    g.addEventListener("click",()=>showInfo(n));
+    const r=n.size;
+    if(n.master){
+      const glow=document.createElementNS("http://www.w3.org/2000/svg","circle");
+      glow.setAttribute("r",r+10);
+      glow.setAttribute("fill",n.unlocked?"rgba(204,0,0,0.07)":"rgba(80,0,60,0.07)");
+      g.appendChild(glow);
+    }
+    const bg=document.createElementNS("http://www.w3.org/2000/svg","circle");
+    bg.setAttribute("r",r);
+    bg.setAttribute("fill",n.unlocked?"rgba(60,20,40,0.9)":"rgba(20,10,25,0.85)");
+    g.appendChild(bg);
+    const ring=document.createElementNS("http://www.w3.org/2000/svg","circle");
+    ring.setAttribute("r",r);ring.setAttribute("fill","none");
+    ring.setAttribute("stroke",n.unlocked?"rgba(204,0,0,0.9)":"rgba(120,0,60,0.5)");
+    ring.setAttribute("stroke-width",n.master?"2.5":"1.5");
+    g.appendChild(ring);
+    if(n.master){
+      const ring2=document.createElementNS("http://www.w3.org/2000/svg","circle");
+      ring2.setAttribute("r",r+5);ring2.setAttribute("fill","none");
+      ring2.setAttribute("stroke",n.unlocked?"rgba(204,0,0,0.3)":"rgba(120,0,60,0.15)");
+      ring2.setAttribute("stroke-width","1");ring2.setAttribute("stroke-dasharray","4,3");
+      g.appendChild(ring2);
+    }
+    const star=document.createElementNS("http://www.w3.org/2000/svg","polygon");
+    star.setAttribute("points",starPoints(0,0,r*0.55,r*0.25,5));
+    star.setAttribute("fill",n.unlocked?"#cc0000":"#804040");
+    if(n.unlocked)star.setAttribute("filter","url(#glow-accent)");
+    g.appendChild(star);
+    const label=document.createElementNS("http://www.w3.org/2000/svg","text");
+    label.setAttribute("y",r+14);label.setAttribute("text-anchor","middle");
+    label.setAttribute("font-family","Cinzel,serif");
+    label.setAttribute("font-size",n.master?"11":"9");
+    label.setAttribute("fill",n.unlocked?"#cc0000":"#805070");
+    label.setAttribute("letter-spacing","1");
+    label.textContent=n.label;
+    g.appendChild(label);
+    nl.appendChild(g);
+  });
+}
+
+function showInfo(node){
+  const panel=document.getElementById("info-panel");
+  document.getElementById("info-name").textContent=node.label;
+  document.getElementById("info-desc").textContent=node.desc;
+  document.getElementById("info-rank").textContent=node.rank;
+  const btn=document.getElementById("info-btn");
+  if(node.unlocked){btn.textContent="Mastered ✦";btn.disabled=true;}
+  else if(perkPoints>0){btn.textContent="Learn More";btn.disabled=false;}
+  else{btn.textContent="No Points Left";btn.disabled=true;}
+  selectedNode=node;
+  panel.classList.add("visible");
+}
+
+function spendPerk(){
+  if(!selectedNode||selectedNode.unlocked||perkPoints<=0)return;
+  selectedNode.unlocked=true;perkPoints--;
+  document.getElementById("perk-count").textContent=perkPoints+" Skill"+(perkPoints!==1?"s":"")+" Unlocked";
+  renderTree(currentTree);
+  showInfo(selectedNode);
+}
+
+function buildWheel(){
+  const rotor=document.getElementById("wheel-rotor");
+  rotor.innerHTML="";
+  WHEEL_ITEMS.forEach((item,i)=>{
+    const div=document.createElement("div");
+    div.className="wheel-item"+(i===wheelCurrentIndex?" active":"");
+    div.dataset.key=item.key;
+    div.dataset.index=i;
+    const itemAngle=i*WHEEL_STEP;
+    div.style.transform=`rotateY(${itemAngle}deg) translateZ(${WHEEL_RADIUS}px)`;
+    div.innerHTML=`<span class="wi-name">${item.label}</span><div class="wi-bar"><div class="wi-fill" style="width:${item.level}%"></div></div><span class="wi-level">${item.level}</span>`;
+    div.addEventListener("click",()=>wheelSelectIndex(i,true));
+    rotor.appendChild(div);
+  });
+  applyWheelRotation();
+}
+
+function applyWheelRotation(){
+  const rotor=document.getElementById("wheel-rotor");
+  rotor.style.transform=`rotateY(${wheelAngle}deg)`;
+  updateWheelItemStyles();
+}
+
+function updateWheelItemStyles(){
+  const items=document.querySelectorAll(".wheel-item");
+  items.forEach((el,i)=>{
+    let net=((i*WHEEL_STEP)+wheelAngle)%360;
+    if(net>180)net-=360;
+    if(net<-180)net+=360;
+    const absAngle=Math.abs(net);
+    const angleRad=absAngle*(Math.PI/180);
+    const rawOpacity=(Math.cos(angleRad)+1)/2;
+    const opacity=0.1+rawOpacity*0.9;
+    el.style.opacity=opacity.toFixed(3);
+    el.classList.toggle("active",i===wheelCurrentIndex);
+    el.style.pointerEvents=absAngle>=90?"none":"auto";
+  });
+}
+
+function wheelSelectIndex(targetIndex,fromClick=false){
+  if(targetIndex===wheelCurrentIndex)return;
+  let delta=targetIndex-wheelCurrentIndex;
+  if(delta>WHEEL_COUNT/2)delta-=WHEEL_COUNT;
+  if(delta<-WHEEL_COUNT/2)delta+=WHEEL_COUNT;
+  wheelAngle-=delta*WHEEL_STEP;
+  wheelCurrentIndex=targetIndex;
+  applyWheelRotation();
+  if(fromClick){
+    document.getElementById("constellation-panel").classList.add("revealed");
+  }
+  wheelSwitchTree(WHEEL_ITEMS[targetIndex].key);
+}
+
+function wheelSwitchTree(key){
+  currentTree=key;selectedNode=null;
+  document.getElementById("info-panel").classList.remove("visible");
+  renderTree(key);
+}
+
+
+function initWheelScroll(){
+  const wrap=document.querySelector(".skill-wheel-wrap");
+  wrap.addEventListener("wheel",(e)=>{
+    e.preventDefault();
+    if(scrollLocked)return;
+    scrollLocked=true;
+    const delta=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
+    const direction=delta>0?1:-1;
+    const nextIndex=(wheelCurrentIndex+direction+WHEEL_COUNT)%WHEEL_COUNT;
+    wheelSelectIndex(nextIndex,false);
+    setTimeout(()=>{scrollLocked=false;},650);
+  },{passive:false});
+}
+
+function switchTree(key,btn){
+  const idx=WHEEL_ITEMS.findIndex(it=>it.key===key);
+  if(idx>=0){wheelSelectIndex(idx,true);}
+  else{currentTree=key;selectedNode=null;document.getElementById("info-panel").classList.remove("visible");renderTree(key);}
+}
+
+buildWheel();
+initWheelScroll();
+renderTree(currentTree);
+
+// Dismiss constellation on wheel click
+document.querySelector(".skill-wheel-wrap").addEventListener("click",function(e){
+  const panel=document.getElementById("constellation-panel");
+  if(!panel.classList.contains("revealed"))return;
+  if(e.target.closest(".wheel-item"))return;
+  panel.classList.remove("revealed");
+  document.getElementById("info-panel").classList.remove("visible");
+  selectedNode=null;
+});
+
+document.getElementById("constellation-panel").addEventListener("click",function(e){
+  if(e.target===this||e.target.id==="constellation-svg"){
+    document.getElementById("info-panel").classList.remove("visible");
+    selectedNode=null;
+  }
+});
+</script>
+</body>
+</html>

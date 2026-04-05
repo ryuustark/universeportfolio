@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skyrim Skill Constellation UI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-bg: #050810;
+  --color-border: rgba(120,160,255,0.15);
+  --color-text: #c8d8f0;
+  --color-text-muted: #7090b0;
+  --color-gold: #d4a843;
+  --color-gold-glow: rgba(212,168,67,0.5);
+  --font-display: "Cinzel Decorative","Cinzel",serif;
+  --font-body: "Cinzel",serif;
+  --text-xs: clamp(0.65rem,0.6rem + 0.2vw,0.75rem);
+  --text-sm: clamp(0.75rem,0.7rem + 0.25vw,0.875rem);
+  --text-base: clamp(0.875rem,0.8rem + 0.3vw,1rem);
+  --text-lg: clamp(1rem,0.9rem + 0.5vw,1.25rem);
+  --text-xl: clamp(1.25rem,1rem + 1vw,1.75rem);
+  --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem; --space-6: 1.5rem;
+  --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px; --radius-full: 9999px;
+  --transition: 280ms cubic-bezier(0.16,1,0.3,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-font-smoothing:antialiased;}
+body{
+  min-height:100dvh;
+  font-family:var(--font-body);
+  background:var(--color-bg);
+  color:var(--color-text);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+.bg-nebula{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 50%,rgba(20,35,90,0.5) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 40% at 20% 30%,rgba(40,20,80,0.3) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 50% at 80% 70%,rgba(10,40,80,0.3) 0%,transparent 60%),
+    var(--color-bg);
+}
+.star-field{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.star-field::before,.star-field::after{
+  content:'';position:absolute;inset:0;
+  background-image:
+    radial-gradient(circle,rgba(255,255,255,0.9) 1px,transparent 1px),
+    radial-gradient(circle,rgba(200,220,255,0.7) 1px,transparent 1px),
+    radial-gradient(circle,rgba(180,200,255,0.5) 0.5px,transparent 0.5px);
+  background-size:300px 200px,200px 300px,400px 250px;
+  background-position:0 0,50px 80px,120px 30px;
+  animation:twinkle 8s ease-in-out infinite alternate;
+}
+.star-field::after{
+  background-size:250px 350px,350px 150px,180px 400px;
+  background-position:30px 20px,100px 150px,200px 60px;
+  animation-delay:-4s;animation-duration:10s;
+}
+@keyframes twinkle{0%{opacity:0.6}50%{opacity:1}100%{opacity:0.7}}
+.ui-wrapper{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;align-items:center;
+  width:100%;max-width:1100px;height:100dvh;
+  padding:var(--space-4) var(--space-4) 0;gap:var(--space-3);
+}
+.header{
+  width:100%;display:flex;align-items:center;justify-content:space-between;
+  padding:var(--space-3) var(--space-6);
+  background:linear-gradient(135deg,rgba(10,18,50,0.9),rgba(5,10,30,0.9));
+  border:1px solid var(--color-border);border-radius:var(--radius-md);
+  backdrop-filter:blur(12px);
+}
+.header-title{
+  font-family:var(--font-display);font-size:var(--text-xl);
+  color:var(--color-gold);letter-spacing:0.1em;
+  text-shadow:0 0 20px var(--color-gold-glow),0 0 40px rgba(212,168,67,0.2);
+}
+.header-character{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+.char-name{font-size:var(--text-sm);color:var(--color-text);letter-spacing:0.08em;}
+.char-level{font-size:var(--text-xs);color:var(--color-gold);letter-spacing:0.06em;}
+.perk-points{display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-sm);color:var(--color-text);}
+.perk-diamond{
+  width:10px;height:10px;background:var(--color-gold);
+  clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);
+  box-shadow:0 0 8px var(--color-gold-glow);
+}
+.main-area{display:flex;flex:1;width:100%;gap:var(--space-4);min-height:0;padding-bottom:var(--space-4);}
+.skill-tabs{
+  display:flex;flex-direction:column;gap:var(--space-2);
+  min-width:130px;overflow-y:auto;
+}
+.skill-tabs::-webkit-scrollbar{width:4px;}
+.skill-tabs::-webkit-scrollbar-thumb{background:rgba(100,130,200,0.3);border-radius:2px;}
+.skill-tab{
+  display:flex;flex-direction:column;align-items:flex-start;gap:4px;
+  padding:var(--space-2) var(--space-3);
+  background:rgba(10,18,50,0.7);border:1px solid var(--color-border);
+  border-radius:var(--radius-sm);cursor:pointer;
+  transition:all var(--transition);text-align:left;
+}
+.skill-tab:hover{background:rgba(20,35,90,0.8);border-color:rgba(120,160,255,0.35);}
+.skill-tab.active{
+  background:rgba(25,40,100,0.9);border-color:var(--color-gold);
+  box-shadow:0 0 14px rgba(212,168,67,0.2),inset 0 0 10px rgba(212,168,67,0.05);
+}
+.tab-name{font-size:var(--text-xs);letter-spacing:0.1em;color:var(--color-text);text-transform:uppercase;}
+.skill-tab.active .tab-name{color:var(--color-gold);}
+.tab-level-bar{width:100%;height:2px;background:rgba(80,100,160,0.3);border-radius:var(--radius-full);overflow:hidden;}
+.tab-level-fill{height:100%;background:#4060a0;border-radius:var(--radius-full);transition:width 0.6s cubic-bezier(0.16,1,0.3,1);}
+.skill-tab.active .tab-level-fill{background:var(--color-gold);}
+.tab-level-num{font-size:var(--text-xs);color:var(--color-text-muted);}
+.skill-tab.active .tab-level-num{color:var(--color-gold);}
+.tab-group-label{
+  font-size:var(--text-xs);color:var(--color-text-muted);
+  text-transform:uppercase;letter-spacing:0.15em;
+  padding:var(--space-2) var(--space-2) 0;opacity:0.7;
+}
+.constellation-panel{
+  flex:1;position:relative;
+  background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(15,25,65,0.8),rgba(5,10,30,0.95));
+  border:1px solid var(--color-border);border-radius:var(--radius-lg);
+  overflow:hidden;backdrop-filter:blur(6px);
+}
+.constellation-title{
+  position:absolute;top:var(--space-4);left:50%;transform:translateX(-50%);
+  font-family:var(--font-display);font-size:var(--text-xl);
+  color:var(--color-gold);letter-spacing:0.12em;
+  text-shadow:0 0 24px var(--color-gold-glow);
+  white-space:nowrap;z-index:2;pointer-events:none;
+}
+.constellation-level{
+  position:absolute;top:calc(var(--space-4) + 2rem);left:50%;transform:translateX(-50%);
+  font-size:var(--text-xs);color:var(--color-text-muted);
+  letter-spacing:0.15em;text-transform:uppercase;z-index:2;pointer-events:none;
+}
+.constellation-svg{position:absolute;inset:0;width:100%;height:100%;}
+.node{cursor:pointer;}
+.info-panel{
+  position:absolute;bottom:var(--space-4);left:50%;
+  transform:translateX(-50%) translateY(8px);
+  min-width:280px;max-width:360px;
+  padding:var(--space-4) var(--space-6);
+  background:linear-gradient(135deg,rgba(8,15,45,0.97),rgba(5,10,30,0.98));
+  border:1px solid rgba(212,168,67,0.4);border-radius:var(--radius-md);
+  backdrop-filter:blur(16px);z-index:10;
+  text-align:center;opacity:0;
+  transition:opacity var(--transition),transform var(--transition);
+  pointer-events:none;
+  box-shadow:0 4px 32px rgba(0,0,0,0.6),0 0 20px rgba(212,168,67,0.08);
+}
+.info-panel.visible{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;}
+.info-panel-name{
+  font-family:var(--font-display);font-size:var(--text-lg);
+  color:var(--color-gold);letter-spacing:0.08em;margin-bottom:var(--space-2);
+  text-shadow:0 0 16px var(--color-gold-glow);
+}
+.info-panel-desc{font-size:var(--text-sm);color:var(--color-text);line-height:1.6;margin-bottom:var(--space-3);max-width:50ch;}
+.info-panel-rank{font-size:var(--text-xs);color:var(--color-text-muted);letter-spacing:0.12em;text-transform:uppercase;}
+.gold-sep{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--color-gold),transparent);margin:var(--space-2) auto;opacity:0.6;}
+.info-panel-btn{
+  margin-top:var(--space-3);padding:var(--space-2) var(--space-6);
+  background:linear-gradient(135deg,rgba(212,168,67,0.15),rgba(212,168,67,0.08));
+  border:1px solid rgba(212,168,67,0.5);border-radius:var(--radius-sm);
+  color:var(--color-gold);font-family:var(--font-body);
+  font-size:var(--text-xs);letter-spacing:0.15em;text-transform:uppercase;
+  cursor:pointer;transition:all var(--transition);
+}
+.info-panel-btn:hover{background:rgba(212,168,67,0.25);box-shadow:0 0 12px rgba(212,168,67,0.3);}
+.info-panel-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.bottom-bar{
+  position:absolute;bottom:0;left:0;right:0;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:var(--space-2) var(--space-6);
+  background:rgba(5,10,30,0.9);border-top:1px solid var(--color-border);
+  font-size:var(--text-xs);color:var(--color-text-muted);
+  letter-spacing:0.1em;text-transform:uppercase;z-index:5;
+}
+.key-hint{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:1px var(--space-2);
+  background:rgba(30,50,110,0.7);border:1px solid rgba(120,160,255,0.3);
+  border-radius:3px;font-size:var(--text-xs);margin-right:4px;
+}
+@media (max-width:768px){
+  .skill-tabs{min-width:80px;}
+  .tab-name{font-size:0.55rem;}
+  .tab-group-label{font-size:0.55rem;}
+}
+</style>
+</head>
+<body>
+<div class="bg-nebula"></div>
+<div class="star-field"></div>
+<div class="ui-wrapper">
+  <header class="header">
+    <div class="header-title">Perks</div>
+    <div class="perk-points">
+      <div class="perk-diamond"></div>
+      <span id="perk-count">3 Perk Points Remaining</span>
+    </div>
+    <div class="header-character">
+      <span class="char-name">Dragonborn</span>
+      <span class="char-level">Level 12 · Nord</span>
+    </div>
+  </header>
+
+  <div class="main-area">
+    <nav class="skill-tabs" aria-label="Skill trees">
+      <div class="tab-group-label">Combat</div>
+      <button class="skill-tab" data-tree="smithing" onclick="switchTree('smithing',this)">
+        <span class="tab-name">Smithing</span>
+        <div class="tab-level-bar"><div class="tab-level-fill" style="width:30%"></div></div>
+        <span class="tab-level-num">30</span>
+      </button>
+      <button class="skill-tab active" data-tree="archery" onclick="switchTree('archery',this)">
+        <span class="tab-name">Archery</span>
+        <div class="tab-level-bar"><div class="tab-level-fill" style="width:55%"></div></div>
+        <span class="tab-level-num">55</span>
+      </button>
+      <button class="skill-tab" data-tree="block" onclick="switchTree('block',this)">
+        <span class="tab-name">Block</span>
+        <div class="tab-level-bar"><div class="tab-level-fill" style="width:20%"></div></div>
+        <span class="tab-level-num">20</span>
+      </button>
+      <button class="skill-tab" data-tree="heavy" onclick="switchTree('heavy',this)">
+        <span class="tab-name">Heavy Armor</span>
+        <div class="tab-level-bar"><div class="tab-level-fill" style="width:40%"></div></div>
+        <span class="tab-level-num">40</span>
+      </button>
+      <div class="tab-group-label" style="margin-top:0.5rem">Magic</div>
+      <button class="skill-tab" data-tree="destruction" onclick="switchTree('destruction',this)">
+        <span class="tab-name">Destruction</span>
+        <div class="tab-level-bar"><div class="tab-level-fill" style="width:25%"></div></div>
+        <span class="tab-level-num">25</span>
+      </button>
+      <button class="skill-tab" data-tree="restoration" onclick="switchTree('restoration',this)">
+        <span class="tab-name">Restoration</span>
+        <div class="tab-level-bar"><div class="tab-level-fill" style="width:15%"></div></div>
+        <span class="tab-level-num">15</span>
+      </button>
+      <button class="skill-tab" data-tree="alteration" onclick="switchTree('alteration',this)">
+        <span class="tab-name">Alteration</span>
+        <div class="tab-level-bar"><div class="tab-level-fill" style="width:18%"></div></div>
+        <span class="tab-level-num">18</span>
+      </button>
+      <div class="tab-group-label" style="margin-top:0.5rem">Stealth</div>
+      <button class="skill-tab" data-tree="sneak" onclick="switchTree('sneak',this)">
+        <span class="tab-name">Sneak</span>
+        <div class="tab-level-bar"><div class="tab-level-fill" style="width:45%"></div></div>
+        <span class="tab-level-num">45</span>
+      </button>
+      <button class="skill-tab" data-tree="lockpick" onclick="switchTree('lockpick',this)">
+        <span class="tab-name">Lockpicking</span>
+        <div class="tab-level-bar"><div class="tab-level-fill" style="width:22%"></div></div>
+        <span class="tab-level-num">22</span>
+      </button>
+      <button class="skill-tab" data-tree="alchemy" onclick="switchTree('alchemy',this)">
+        <span class="tab-name">Alchemy</span>
+        <div class="tab-level-bar"><div class="tab-level-fill" style="width:35%"></div></div>
+        <span class="tab-level-num">35</span>
+      </button>
+    </nav>
+
+    <div class="constellation-panel" id="constellation-panel">
+      <div class="constellation-title" id="tree-title">Archery</div>
+      <div class="constellation-level" id="tree-level">Skill Level: 55</div>
+      <svg class="constellation-svg" id="constellation-svg" viewBox="0 0 600 500" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="glow-gold" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <radialGradient id="bg-radial" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(20,35,90,0.4)"/>
+            <stop offset="100%" stop-color="rgba(5,10,30,0)"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="300" cy="250" rx="250" ry="200" fill="url(#bg-radial)"/>
+        <g id="lines-layer"></g>
+        <g id="nodes-layer"></g>
+      </svg>
+      <div class="info-panel" id="info-panel">
+        <div class="info-panel-name" id="info-name">Overdraw</div>
+        <div class="gold-sep"></div>
+        <div class="info-panel-desc" id="info-desc">Bows do 20% more damage.</div>
+        <div class="info-panel-rank" id="info-rank">Rank 1/5 · Requires: Archery 20</div>
+        <button class="info-panel-btn" id="info-btn" onclick="spendPerk()">Unlock Perk</button>
+      </div>
+      <div class="bottom-bar">
+        <span><span class="key-hint">Click</span>Select</span>
+        <span><span class="key-hint">Tab</span>Switch Tree</span>
+        <span><span class="key-hint">Unlock</span>Spend Point</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const trees = {
+  archery:{title:"Archery",level:55,nodes:[
+    {id:"overdraw",x:300,y:440,label:"Overdraw",size:18,master:true,unlocked:true,desc:"Bows do 20% more damage per rank.",rank:"Rank 2/5 · Archery 20",parents:[]},
+    {id:"crit_shot",x:200,y:360,label:"Critical Shot",size:14,unlocked:true,desc:"10% chance of a critical hit that does extra damage.",rank:"Rank 1/3 · Archery 30",parents:["overdraw"]},
+    {id:"steady_hand",x:400,y:360,label:"Steady Hand",size:14,unlocked:false,desc:"Zooming in with a bow slows time by 25% per rank.",rank:"Rank 1/2 · Archery 40",parents:["overdraw"]},
+    {id:"hunter_disc",x:150,y:270,label:"Hunter's Disc.",size:12,unlocked:false,desc:"Damage bonus increases by 25% against animals.",rank:"Rank 1/1 · Archery 50",parents:["crit_shot"]},
+    {id:"ranger",x:300,y:280,label:"Ranger",size:12,unlocked:false,desc:"Able to move faster with a drawn bow.",rank:"Rank 1/1 · Archery 60",parents:["crit_shot","steady_hand"]},
+    {id:"eagle_eye",x:450,y:270,label:"Eagle Eye",size:12,unlocked:false,desc:"Pressing Block while aiming zooms in your view.",rank:"Rank 1/1 · Archery 30",parents:["steady_hand"]},
+    {id:"power_shot",x:200,y:190,label:"Power Shot",size:13,unlocked:false,desc:"Arrows stagger all but the largest opponents 50% of the time.",rank:"Rank 1/1 · Archery 50",parents:["ranger","hunter_disc"]},
+    {id:"quick_shot",x:420,y:175,label:"Quick Shot",size:13,unlocked:false,desc:"Can draw a bow 30% faster.",rank:"Rank 1/1 · Archery 70",parents:["ranger","eagle_eye"]},
+    {id:"bullseye",x:300,y:100,label:"Bullseye",size:18,master:true,unlocked:false,desc:"15% chance of paralyzing the target for a few seconds.",rank:"Rank 1/1 · Archery 100",parents:["power_shot","quick_shot"]},
+  ]},
+  sneak:{title:"Sneak",level:45,nodes:[
+    {id:"stealth",x:300,y:440,label:"Stealth",size:18,master:true,unlocked:true,desc:"20% harder to detect while sneaking per rank.",rank:"Rank 2/5 · Sneak 0",parents:[]},
+    {id:"muffled",x:200,y:360,label:"Muffled Movement",size:13,unlocked:true,desc:"Noise from armour reduced by 50%.",rank:"Rank 1/1 · Sneak 20",parents:["stealth"]},
+    {id:"light_foot",x:400,y:360,label:"Light Foot",size:13,unlocked:false,desc:"Won't trigger pressure plates.",rank:"Rank 1/1 · Sneak 30",parents:["stealth"]},
+    {id:"silent_roll",x:150,y:270,label:"Silent Roll",size:12,unlocked:false,desc:"Sprinting while sneaking executes a silent forward roll.",rank:"Rank 1/1 · Sneak 50",parents:["muffled"]},
+    {id:"assassin",x:300,y:280,label:"Assassin's Blade",size:12,unlocked:false,desc:"Sneak attacks with daggers do 15x damage.",rank:"Rank 1/1 · Sneak 50",parents:["muffled","light_foot"]},
+    {id:"backstab",x:450,y:270,label:"Backstab",size:12,unlocked:false,desc:"Sneak attacks with one-handed weapons do 6x damage.",rank:"Rank 1/1 · Sneak 30",parents:["light_foot"]},
+    {id:"shrouded",x:300,y:100,label:"Shadow Warrior",size:18,master:true,unlocked:false,desc:"Crouching stops combat for a moment and forces enemies to investigate.",rank:"Rank 1/1 · Sneak 100",parents:["assassin","silent_roll","backstab"]},
+  ]}
+};
+const lvls={smithing:30,block:20,heavy:40,destruction:25,restoration:15,alteration:18,lockpick:22,alchemy:35};
+["smithing","block","heavy","destruction","restoration","alteration","lockpick","alchemy"].forEach(k=>{
+  const t=k.charAt(0).toUpperCase()+k.slice(1);
+  trees[k]={title:t,level:lvls[k],nodes:[
+    {id:"main",x:300,y:440,label:t,size:18,master:true,unlocked:false,desc:"Master the art of "+t+".",rank:"Skill "+lvls[k],parents:[]},
+    {id:"a",x:200,y:340,label:"...",size:12,unlocked:false,desc:"Unlock as your skill grows.",rank:"Higher skill required",parents:["main"]},
+    {id:"b",x:400,y:340,label:"...",size:12,unlocked:false,desc:"Unlock as your skill grows.",rank:"Higher skill required",parents:["main"]},
+    {id:"c",x:300,y:230,label:"...",size:12,unlocked:false,desc:"Unlock as your skill grows.",rank:"Higher skill required",parents:["a","b"]},
+    {id:"d",x:300,y:120,label:"Master",size:16,master:true,unlocked:false,desc:"Mastery of "+t+" unlocked.",rank:"Skill 100",parents:["c"]},
+  ]};
+});
+
+let currentTree="archery",selectedNode=null,perkPoints=3;
+
+function starPoints(cx,cy,outerR,innerR,pts){
+  let p=[];
+  for(let i=0;i<pts*2;i++){
+    const a=(i*Math.PI)/pts-Math.PI/2,r=i%2===0?outerR:innerR;
+    p.push(`${cx+r*Math.cos(a)},${cy+r*Math.sin(a)}`);
+  }
+  return p.join(" ");
+}
+
+function renderTree(key){
+  const tree=trees[key];
+  const ll=document.getElementById("lines-layer");
+  const nl=document.getElementById("nodes-layer");
+  ll.innerHTML="";nl.innerHTML="";
+  document.getElementById("tree-title").textContent=tree.title;
+  document.getElementById("tree-level").textContent="Skill Level: "+tree.level;
+  const map={};
+  tree.nodes.forEach(n=>map[n.id]=n);
+  // Lines
+  tree.nodes.forEach(n=>{
+    n.parents.forEach(pid=>{
+      const p=map[pid];if(!p)return;
+      const active=n.unlocked&&p.unlocked;
+      const line=document.createElementNS("http://www.w3.org/2000/svg","line");
+      line.setAttribute("x1",p.x);line.setAttribute("y1",p.y);
+      line.setAttribute("x2",n.x);line.setAttribute("y2",n.y);
+      line.setAttribute("stroke",active?"rgba(212,168,67,0.65)":"rgba(80,110,200,0.25)");
+      line.setAttribute("stroke-width",active?"2":"1.5");
+      if(!active)line.setAttribute("stroke-dasharray","5,4");
+      ll.appendChild(line);
+    });
+  });
+  // Nodes
+  tree.nodes.forEach(n=>{
+    const g=document.createElementNS("http://www.w3.org/2000/svg","g");
+    g.setAttribute("transform",`translate(${n.x},${n.y})`);
+    g.style.cursor="pointer";
+    g.addEventListener("mouseenter",()=>showInfo(n));
+    g.addEventListener("click",()=>showInfo(n));
+    const r=n.size;
+    if(n.master){
+      const glow=document.createElementNS("http://www.w3.org/2000/svg","circle");
+      glow.setAttribute("r",r+10);
+      glow.setAttribute("fill",n.unlocked?"rgba(212,168,67,0.07)":"rgba(40,60,150,0.07)");
+      g.appendChild(glow);
+    }
+    const bg=document.createElementNS("http://www.w3.org/2000/svg","circle");
+    bg.setAttribute("r",r);
+    bg.setAttribute("fill",n.unlocked?"rgba(30,55,140,0.9)":"rgba(10,18,50,0.85)");
+    g.appendChild(bg);
+    const ring=document.createElementNS("http://www.w3.org/2000/svg","circle");
+    ring.setAttribute("r",r);ring.setAttribute("fill","none");
+    ring.setAttribute("stroke",n.unlocked?"rgba(212,168,67,0.9)":"rgba(80,110,200,0.5)");
+    ring.setAttribute("stroke-width",n.master?"2.5":"1.5");
+    g.appendChild(ring);
+    if(n.master){
+      const ring2=document.createElementNS("http://www.w3.org/2000/svg","circle");
+      ring2.setAttribute("r",r+5);ring2.setAttribute("fill","none");
+      ring2.setAttribute("stroke",n.unlocked?"rgba(212,168,67,0.3)":"rgba(80,110,200,0.15)");
+      ring2.setAttribute("stroke-width","1");ring2.setAttribute("stroke-dasharray","4,3");
+      g.appendChild(ring2);
+    }
+    const star=document.createElementNS("http://www.w3.org/2000/svg","polygon");
+    star.setAttribute("points",starPoints(0,0,r*0.55,r*0.25,5));
+    star.setAttribute("fill",n.unlocked?"#d4a843":"#4060a0");
+    if(n.unlocked)star.setAttribute("filter","url(#glow-gold)");
+    g.appendChild(star);
+    const label=document.createElementNS("http://www.w3.org/2000/svg","text");
+    label.setAttribute("y",r+14);label.setAttribute("text-anchor","middle");
+    label.setAttribute("font-family","Cinzel,serif");
+    label.setAttribute("font-size",n.master?"11":"9");
+    label.setAttribute("fill",n.unlocked?"#d4a843":"#5070a0");
+    label.setAttribute("letter-spacing","1");
+    label.textContent=n.label;
+    g.appendChild(label);
+    nl.appendChild(g);
+  });
+}
+
+function showInfo(node){
+  const panel=document.getElementById("info-panel");
+  document.getElementById("info-name").textContent=node.label;
+  document.getElementById("info-desc").textContent=node.desc;
+  document.getElementById("info-rank").textContent=node.rank;
+  const btn=document.getElementById("info-btn");
+  if(node.unlocked){btn.textContent="Perk Unlocked ✦";btn.disabled=true;}
+  else if(perkPoints>0){btn.textContent="Unlock Perk";btn.disabled=false;}
+  else{btn.textContent="No Perk Points";btn.disabled=true;}
+  selectedNode=node;
+  panel.classList.add("visible");
+}
+
+function spendPerk(){
+  if(!selectedNode||selectedNode.unlocked||perkPoints<=0)return;
+  selectedNode.unlocked=true;perkPoints--;
+  document.getElementById("perk-count").textContent=perkPoints+" Perk Point"+(perkPoints!==1?"s":"")+" Remaining";
+  renderTree(currentTree);
+  showInfo(selectedNode);
+}
+
+function switchTree(key,btn){
+  currentTree=key;selectedNode=null;
+  document.getElementById("info-panel").classList.remove("visible");
+  document.querySelectorAll(".skill-tab").forEach(t=>t.classList.remove("active"));
+  btn.classList.add("active");
+  renderTree(key);
+}
+
+renderTree(currentTree);
+
+document.getElementById("constellation-panel").addEventListener("click",function(e){
+  if(e.target===this||e.target.id==="constellation-svg"){
+    document.getElementById("info-panel").classList.remove("visible");
+    selectedNode=null;
+  }
+});
+</script>
+</body>
+</html>

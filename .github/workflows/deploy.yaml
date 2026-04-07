@@ -1,0 +1,5 @@
+on:
+  push:
+    branches: [develop]    # runs CI on your dev work
+  pull_request:
+    branches: [main]       # gates the merge to production

@@ -26,7 +26,15 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-font-smoothing:antialiased}
-body{min-height:100dvh;font-family:var(--font-body);background:var(--color-bg);color:var(--color-text);overflow:hidden;display:flex;flex-direction:row}
+body{
+  min-height:100dvh;
+  font-family:var(--font-body);
+  background:var(--color-bg);
+  color:var(--color-text);
+  overflow:hidden;
+  display:flex;
+  flex-direction:row;
+}
 
 /* bg */
 .bg-nebula{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(70,0,40,0.4) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 20% 30%,rgba(80,0,60,0.3) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 80% 70%,rgba(40,0,80,0.3) 0%,transparent 60%),var(--color-bg)}
@@ -35,8 +43,18 @@ body{min-height:100dvh;font-family:var(--font-body);background:var(--color-bg);c
 .star-field::after{background-size:250px 350px,350px 150px,180px 400px;background-position:30px 20px,100px 150px,200px 60px;animation-delay:-4s;animation-duration:10s}
 @keyframes twinkle{0%{opacity:.6}50%{opacity:1}100%{opacity:.7}}
 
-/* side menu */
-.side-menu{position:fixed;left:0;top:0;width:220px;height:100dvh;background:linear-gradient(135deg,rgba(10,5,20,.95),rgba(5,0,15,.95));border-right:2px solid var(--color-border);backdrop-filter:blur(12px);z-index:50;display:flex;flex-direction:column;padding:var(--sp6);gap:var(--sp6);overflow-y:auto}
+/* ── SIDE MENU (desktop) ── */
+.side-menu{
+  position:fixed;left:0;top:0;
+  width:220px;height:100dvh;
+  background:linear-gradient(135deg,rgba(10,5,20,.95),rgba(5,0,15,.95));
+  border-right:2px solid var(--color-border);
+  backdrop-filter:blur(12px);
+  z-index:50;
+  display:flex;flex-direction:column;
+  padding:var(--sp6);gap:var(--sp6);
+  overflow-y:auto;
+}
 .menu-profile{display:flex;flex-direction:column;gap:var(--sp3);padding-bottom:var(--sp4);border-bottom:1px solid var(--color-border)}
 .profile-title{font-family:var(--font-display);font-size:var(--text-lg);color:var(--color-accent);letter-spacing:.1em;text-shadow:0 0 15px var(--color-accent-glow)}
 .profile-subtitle{font-size:var(--text-sm);color:var(--color-text-muted);letter-spacing:.05em}
@@ -44,10 +62,49 @@ body{min-height:100dvh;font-family:var(--font-body);background:var(--color-bg);c
 .contact-item{display:flex;align-items:center;gap:var(--sp3);padding:var(--sp2) var(--sp3);background:rgba(204,0,0,.08);border:1px solid var(--color-border);border-radius:var(--r-sm);text-decoration:none;color:var(--color-text);transition:all var(--ease);font-size:var(--text-xs);cursor:pointer}
 .contact-item:hover{background:rgba(204,0,0,.2);border-color:var(--color-accent);color:var(--color-accent);box-shadow:0 0 12px var(--color-accent-glow)}
 .contact-icon{font-size:1.2rem}
+.contact-label{}
 
-/* wrapper */
-.ui-wrapper{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:calc(100% - 220px);height:100dvh;margin-left:220px;padding:var(--sp4);gap:var(--sp3)}
-.header{width:100%;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:var(--sp3) var(--sp6);background:linear-gradient(135deg,rgba(40,10,25,.9),rgba(15,5,20,.9));border:1px solid var(--color-border);border-radius:var(--r-md);backdrop-filter:blur(12px)}
+/* ── UI WRAPPER (desktop) ── */
+.ui-wrapper{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;align-items:center;
+  width:calc(100% - 220px);
+  height:100dvh;
+  margin-left:220px;
+  padding:var(--sp4);
+  gap:var(--sp3);
+}
+
+/* ── HEADER ── */
+.header{
+  width:100%;
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:var(--sp3) var(--sp6);
+  background:linear-gradient(135deg,rgba(40,10,25,.9),rgba(15,5,20,.9));
+  border:1px solid var(--color-border);
+  border-radius:var(--r-md);
+  backdrop-filter:blur(12px);
+  /* transition for collapse */
+  max-height:80px;
+  overflow:hidden;
+  transition:
+    max-height 480ms cubic-bezier(0.16,1,0.3,1),
+    opacity 300ms ease,
+    padding 480ms cubic-bezier(0.16,1,0.3,1),
+    margin 480ms cubic-bezier(0.16,1,0.3,1);
+}
+body.constellation-mode .header{
+  max-height:0;
+  opacity:0;
+  padding-top:0;
+  padding-bottom:0;
+  margin-top:0;
+  margin-bottom:0;
+  pointer-events:none;
+}
 .header-title{font-family:var(--font-display);font-size:var(--text-xl);color:var(--color-accent);letter-spacing:.1em;text-shadow:0 0 20px var(--color-accent-glow),0 0 40px rgba(204,0,0,.2)}
 .header-character{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
 .char-name{font-size:var(--text-sm);color:var(--color-text);letter-spacing:.08em}
@@ -55,10 +112,18 @@ body{min-height:100dvh;font-family:var(--font-body);background:var(--color-bg);c
 .perk-points{display:flex;align-items:center;gap:var(--sp2);font-size:var(--text-sm);color:var(--color-text)}
 .perk-diamond{width:10px;height:10px;background:var(--color-accent);clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);box-shadow:0 0 8px var(--color-accent-glow)}
 
-/* main area */
-.main-area{display:flex;flex:1;width:100%;flex-direction:column;gap:var(--sp3);min-height:0;padding-bottom:var(--sp4)}
+/* ── MAIN AREA ── */
+.main-area{
+  display:flex;
+  flex:1;
+  width:100%;
+  flex-direction:column;
+  gap:var(--sp3);
+  min-height:0;
+  padding-bottom:var(--sp4);
+}
 
-/* ── WHEEL — always visible, fixed height ── */
+/* ── SKILL WHEEL ── */
 .skill-wheel-wrap{
   flex:1;
   width:100%;
@@ -66,19 +131,23 @@ body{min-height:100dvh;font-family:var(--font-body);background:var(--color-bg);c
   overflow:hidden;
   display:flex;align-items:center;justify-content:center;
   cursor:pointer;
-  transition:flex 480ms cubic-bezier(0.16,1,0.3,1), height 480ms cubic-bezier(0.16,1,0.3,1), transform 480ms cubic-bezier(0.16,1,0.3,1);
-  transform:scale(1.1);
+  transform:scale(1.15);
+  transform-origin:center center;
+  transition:
+    flex 500ms cubic-bezier(0.16,1,0.3,1),
+    height 500ms cubic-bezier(0.16,1,0.3,1),
+    transform 500ms cubic-bezier(0.16,1,0.3,1);
 }
-/* When constellation is revealed, wheel moves to top */
-.skill-wheel-wrap.at-top{
-  flex-shrink:0;
-  height:140px;
-  transform:scale(0.85) translateY(-40px);
+body.constellation-mode .skill-wheel-wrap{
+  flex:0 0 auto;
+  height:130px;
+  transform:scale(0.575);
+  transform-origin:center center;
 }
 .wheel-scene{
   perspective:700px;perspective-origin:50% 50%;
   width:100%;height:120px;
-  overflow:visible;       /* items must NOT be clipped here */
+  overflow:visible;
   position:relative;
 }
 .wheel-rotor{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 600ms ease}
@@ -101,18 +170,25 @@ body{min-height:100dvh;font-family:var(--font-body);background:var(--color-bg);c
 .wheel-item.active .wi-fill{background:#cc0000}
 .wi-level{font-size:.65rem;color:#a080b0;letter-spacing:.06em}
 .wheel-item.active .wi-level{color:#cc0000}
-/* side fades matching bg color */
+/* side fades */
 .wf-l,.wf-r{position:absolute;top:0;bottom:0;width:90px;pointer-events:none;z-index:3}
 .wf-l{left:0;background:linear-gradient(to right,#2d2d3c 0%,transparent 100%)}
 .wf-r{right:0;background:linear-gradient(to left,#2d2d3c 0%,transparent 100%)}
 
 /* ── CONSTELLATION PANEL ── */
 .constellation-panel{
-  flex:1;position:relative;width:100%;min-height:0;
+  flex:1;
+  position:relative;
+  width:100%;
+  min-height:0;
   background:linear-gradient(160deg,rgba(10,5,15,.9),rgba(15,5,20,.97));
-  border:1px solid var(--color-border);border-radius:var(--r-lg);
-  overflow:hidden;backdrop-filter:blur(16px);
-  opacity:0;pointer-events:none;transform:translateY(14px);
+  border:1px solid var(--color-border);
+  border-radius:var(--r-lg);
+  overflow:hidden;
+  backdrop-filter:blur(16px);
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(50px);
   transition:transform 480ms cubic-bezier(0.16,1,0.3,1),opacity 320ms ease;
 }
 .constellation-panel.revealed{opacity:1;pointer-events:auto;transform:translateY(0)}
@@ -120,13 +196,30 @@ body{min-height:100dvh;font-family:var(--font-body);background:var(--color-bg);c
 /* SVG left 65% */
 .constellation-svg{position:absolute;top:0;left:0;width:65%;height:100%}
 
-.constellation-title{position:absolute;top:var(--sp4);left:32%;transform:translateX(-50%);font-family:var(--font-display);font-size:var(--text-xl);color:var(--color-accent);letter-spacing:.12em;text-shadow:0 0 24px var(--color-accent-glow);white-space:nowrap;z-index:4;pointer-events:none}
-.constellation-level{position:absolute;top:calc(var(--sp4) + 2rem);left:32%;transform:translateX(-50%);font-size:var(--text-xs);color:var(--color-text-muted);letter-spacing:.15em;text-transform:uppercase;z-index:4;pointer-events:none}
+.constellation-title{
+  position:absolute;top:var(--sp4);left:32%;
+  transform:translateX(-50%);
+  font-family:var(--font-display);
+  font-size:var(--text-xl);
+  color:var(--color-accent);
+  letter-spacing:.12em;
+  text-shadow:0 0 24px var(--color-accent-glow);
+  white-space:nowrap;
+  z-index:4;pointer-events:none;
+}
+.constellation-level{
+  position:absolute;top:calc(var(--sp4) + 2rem);left:32%;
+  transform:translateX(-50%);
+  font-size:var(--text-xs);
+  color:var(--color-text-muted);
+  letter-spacing:.15em;text-transform:uppercase;
+  z-index:4;pointer-events:none;
+}
 
 /* divider */
 .panel-divider{position:absolute;top:8%;bottom:8%;left:65%;width:1px;background:linear-gradient(to bottom,transparent,rgba(204,0,0,.3),transparent);z-index:3}
 
-/* ── INFO PANEL — right side ── */
+/* ── INFO PANEL ── */
 .info-panel{
   position:absolute;top:50%;right:var(--sp4);
   transform:translateY(-50%) translateX(10px);
@@ -149,24 +242,121 @@ body{min-height:100dvh;font-family:var(--font-body);background:var(--color-bg);c
 .info-panel-btn:hover{background:rgba(204,0,0,.25);box-shadow:0 0 12px rgba(204,0,0,.3)}
 .info-panel-btn:disabled{opacity:.4;cursor:not-allowed}
 
-/* bottom bar */
+/* ── BOTTOM BAR ── */
 .bottom-bar{position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:var(--sp2) var(--sp6);background:rgba(10,5,15,.92);border-top:1px solid var(--color-border);font-size:var(--text-xs);color:var(--color-text-muted);letter-spacing:.1em;text-transform:uppercase;z-index:5}
 .key-hint{display:inline-flex;align-items:center;justify-content:center;padding:1px var(--sp2);background:rgba(80,0,60,.7);border:1px solid rgba(204,0,0,.3);border-radius:3px;font-size:var(--text-xs);margin-right:4px}
 
-/* mobile */
+/* ── MOBILE (≤768px) ── */
 @media(max-width:768px){
-  .side-menu{width:100%;height:auto;flex-direction:row;border-right:none;border-bottom:2px solid var(--color-border);padding:var(--sp3)}
-  .menu-profile,.menu-contacts{flex-direction:row;gap:var(--sp4)}
-  .ui-wrapper{width:100%;margin-left:0}
-  .skill-wheel-wrap{height:110px}
+  /* body becomes flex-column */
+  body{
+    flex-direction:column;
+  }
+
+  /* side menu becomes a compact horizontal top bar */
+  .side-menu{
+    position:relative;
+    width:100%;
+    height:52px;
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
+    border-right:none;
+    border-bottom:2px solid var(--color-border);
+    padding:0 var(--sp4);
+    gap:var(--sp4);
+    overflow:visible;
+    flex-shrink:0;
+  }
+  .menu-profile{
+    flex-direction:row;
+    align-items:center;
+    gap:var(--sp3);
+    padding-bottom:0;
+    border-bottom:none;
+  }
+  .profile-subtitle{
+    display:none;
+  }
+  .menu-contacts{
+    flex-direction:row;
+    align-items:center;
+    gap:var(--sp2);
+  }
+  /* Icon-only contact items on mobile */
+  .contact-item{
+    padding:var(--sp2);
+    gap:0;
+  }
+  .contact-label{
+    display:none;
+  }
+  .contact-icon{
+    font-size:1rem;
+  }
+
+  /* ui-wrapper fills remaining height */
+  .ui-wrapper{
+    width:100%;
+    margin-left:0;
+    height:calc(100dvh - 52px);
+    padding:var(--sp3);
+  }
+
+  /* wheel scale adjustments for mobile */
+  .skill-wheel-wrap{
+    transform:scale(1.0);
+  }
+  body.constellation-mode .skill-wheel-wrap{
+    height:90px;
+    transform:scale(0.7);
+  }
+
+  /* wheel items smaller on mobile */
   .wheel-scene{height:90px}
-  .wheel-item{width:100px;height:50px;margin-top:-25px;margin-left:-50px;padding:6px 8px}
+  .wheel-item{width:110px;height:50px;margin-top:-25px;margin-left:-55px;padding:6px 8px}
   .wi-name{font-size:.58rem}
-  body{flex-direction:column}
-  .constellation-svg{width:100%}
+
+  /* constellation SVG full width on mobile */
+  .constellation-svg{
+    position:absolute;
+    top:0;left:0;
+    width:100%;
+    height:55%;
+  }
+
+  /* hide divider on mobile */
   .panel-divider{display:none}
-  .info-panel{position:relative;top:auto;right:auto;transform:none;width:calc(100% - var(--sp4)*2);max-width:none;margin:var(--sp4) auto}
-  .info-panel.visible{transform:none}
+
+  /* constellation title centered on mobile */
+  .constellation-title{
+    left:50%;
+    transform:translateX(-50%);
+  }
+  .constellation-level{
+    left:50%;
+    transform:translateX(-50%);
+  }
+
+  /* info panel slides up from bottom on mobile */
+  .info-panel{
+    position:absolute;
+    top:auto;
+    bottom:calc(var(--sp3) + 36px); /* above bottom-bar */
+    left:var(--sp3);
+    right:var(--sp3);
+    width:auto;
+    max-width:none;
+    min-width:0;
+    transform:translateY(20px);
+    pointer-events:none;
+    opacity:0;
+  }
+  .info-panel.visible{
+    transform:translateY(0);
+    opacity:1;
+    pointer-events:auto;
+  }
 }
 </style>
 </head>
@@ -174,6 +364,7 @@ body{min-height:100dvh;font-family:var(--font-body);background:var(--color-bg);c
 <div class="bg-nebula"></div>
 <div class="star-field"></div>
 
+<!-- SIDE MENU (desktop: fixed left column | mobile: top bar) -->
 <div class="side-menu">
   <div class="menu-profile">
     <div class="profile-title">Daniel Cortés</div>
@@ -181,13 +372,13 @@ body{min-height:100dvh;font-family:var(--font-body);background:var(--color-bg);c
   </div>
   <div class="menu-contacts">
     <a href="mailto:your.email@example.com" class="contact-item">
-      <span class="contact-icon">✉</span><span>Email</span>
+      <span class="contact-icon">✉</span><span class="contact-label">Email</span>
     </a>
     <a href="https://linkedin.com" target="_blank" class="contact-item">
-      <span class="contact-icon">in</span><span>LinkedIn</span>
+      <span class="contact-icon">in</span><span class="contact-label">LinkedIn</span>
     </a>
     <a href="https://instagram.com" target="_blank" class="contact-item">
-      <span class="contact-icon">📷</span><span>Instagram</span>
+      <span class="contact-icon">📷</span><span class="contact-label">Instagram</span>
     </a>
   </div>
 </div>
@@ -207,7 +398,7 @@ body{min-height:100dvh;font-family:var(--font-body);background:var(--color-bg);c
 
   <div class="main-area">
 
-    <!-- WHEEL — always visible -->
+    <!-- WHEEL — always visible, fills screen on landing, shrinks in constellation mode -->
     <div class="skill-wheel-wrap" id="wheel-wrap">
       <div class="wheel-scene">
         <div class="wheel-rotor" id="wheel-rotor"></div>
@@ -216,7 +407,7 @@ body{min-height:100dvh;font-family:var(--font-body);background:var(--color-bg);c
       <div class="wf-r"></div>
     </div>
 
-    <!-- CONSTELLATION — revealed on click -->
+    <!-- CONSTELLATION — revealed on wheel item click -->
     <div class="constellation-panel" id="constellation-panel">
       <div class="constellation-title" id="tree-title">Salesforce Core</div>
       <div class="constellation-level" id="tree-level">Skill Level: 90</div>
@@ -391,7 +582,7 @@ function showInfo(node){
   document.getElementById("info-desc").textContent=node.desc;
   document.getElementById("info-rank").textContent=node.rank;
   const btn=document.getElementById("info-btn");
-  btn.textContent=node.unlocked?"Mastered ✦":"Planned →";btn.disabled=true;
+  btn.textContent=node.unlocked?"Mastered \u2726":"Planned \u2192";btn.disabled=true;
   selNode=node;
   document.getElementById("info-panel").classList.add("visible");
 }
@@ -433,7 +624,7 @@ function wheelGo(target,fromClick=false){
   renderTree(curTree);
   if(fromClick){
     document.getElementById("constellation-panel").classList.add("revealed");
-    document.getElementById("wheel-wrap").classList.add("at-top");
+    document.body.classList.add("constellation-mode");
   }
 }
 
@@ -445,11 +636,13 @@ document.getElementById("wheel-wrap").addEventListener("wheel",e=>{
   setTimeout(()=>{wLocked=false},650);
 },{passive:false});
 
+/* Click empty wheel space → exit constellation mode */
 document.getElementById("wheel-wrap").addEventListener("click",e=>{
   const isWheelItem=e.target.closest(".wheel-item")!==null;
   const constellationPanel=document.getElementById("constellation-panel");
   if(!isWheelItem&&constellationPanel.classList.contains("revealed")){
     constellationPanel.classList.remove("revealed");
+    document.body.classList.remove("constellation-mode");
   }
 });
 
@@ -459,14 +652,13 @@ document.getElementById("constellation-svg").addEventListener("click",e=>{
   }
 });
 
-/* Watch for constellation state changes */
+/* MutationObserver: keep body.constellation-mode in sync with panel state */
 const constellationPanel=document.getElementById("constellation-panel");
 const obs=new MutationObserver(()=>{
-  const wheelWrap=document.getElementById("wheel-wrap");
   if(constellationPanel.classList.contains("revealed")){
-    wheelWrap.classList.add("at-top");
+    document.body.classList.add("constellation-mode");
   }else{
-    wheelWrap.classList.remove("at-top");
+    document.body.classList.remove("constellation-mode");
   }
 });
 obs.observe(constellationPanel,{attributes:true,attributeFilter:["class"]});

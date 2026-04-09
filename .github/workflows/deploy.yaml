@@ -1,5 +1,54 @@
+name: Deploy Portfolio
+
 on:
   push:
-    branches: [develop]    # runs CI on your dev work
+    branches: [develop]
   pull_request:
-    branches: [main]       # gates the merge to production
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: "Deploy to production"
+        required: true
+        default: true
+        type: boolean
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to production (if enabled)
+        if: github.event.inputs.deploy == 'true' || (github.event_name == 'push' && github.ref == 'refs/heads/develop')
+        run: |
+          # Create backup of current prod version with timestamp
+          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+          mkdir -p project/prod/backups
+          cp project/prod/portfolio.html "project/prod/backups/portfolio-backup-${TIMESTAMP}.html"
+
+          # Copy dev version to prod
+          cp project/dev/dev_portfolio.html project/prod/portfolio.html
+
+          echo "✅ Deployment complete: dev_portfolio.html → portfolio.html"
+          echo "📦 Backup created: portfolio-backup-${TIMESTAMP}.html"
+
+      - name: Commit and push deployment
+        if: github.event.inputs.deploy == 'true' || (github.event_name == 'push' && github.ref == 'refs/heads/develop')
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add project/prod/portfolio.html
+          git commit -m "Deploy: update prod portfolio from dev [skip ci]" || echo "No changes to commit"
+          git push
+
+      - name: Create deployment tag
+        if: github.event.inputs.deploy == 'true' || (github.event_name == 'push' && github.ref == 'refs/heads/develop')
+        run: |
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          git tag "deployed-${TIMESTAMP}"
+          git push origin "deployed-${TIMESTAMP}"

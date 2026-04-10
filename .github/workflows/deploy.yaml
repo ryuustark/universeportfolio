@@ -23,40 +23,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Deploy to production (if enabled)
+      - name: Deploy to GitHub Pages (/docs)
         if: github.event.inputs.deploy == 'true' || (github.event_name == 'push' && github.ref == 'refs/heads/develop')
         run: |
-          # Create timestamped backup of current prod (directory snapshot)
-          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-          BACKUP_DIR="project/prod/backups/backup-${TIMESTAMP}"
-          mkdir -p "${BACKUP_DIR}"
-          for item in project/prod/index.html project/prod/css project/prod/js project/prod/portfolio.html; do
-            if [ -e "$item" ]; then
-              cp -r "$item" "${BACKUP_DIR}/"
-            fi
-          done
+          # Clear old /docs content
+          rm -rf docs/*
 
-          # Sync dev → prod (excluding backups dir)
-          rm -rf project/prod/css project/prod/js project/prod/index.html
-          cp project/dev/index.html project/prod/index.html
-          cp -r project/dev/css project/prod/css
-          cp -r project/dev/js project/prod/js
+          # Copy from dev to docs
+          mkdir -p docs/css docs/js
+          cp project/dev/index.html docs/index.html
+          cp -r project/dev/css/* docs/css/
+          cp -r project/dev/js/* docs/js/
 
-          echo "✅ Deployment complete: project/dev → project/prod"
-          echo "📦 Backup created: ${BACKUP_DIR}"
+          echo "✅ Deployed to /docs for GitHub Pages"
 
       - name: Commit and push deployment
         if: github.event.inputs.deploy == 'true' || (github.event_name == 'push' && github.ref == 'refs/heads/develop')
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add project/prod/
-          git commit -m "Deploy: update prod portfolio from dev [skip ci]" || echo "No changes to commit"
+          git add docs/
+          git commit -m "Deploy: publish portfolio to /docs for GitHub Pages [skip ci]" || echo "No changes to commit"
           git push
-
-      - name: Create deployment tag
-        if: github.event.inputs.deploy == 'true' || (github.event_name == 'push' && github.ref == 'refs/heads/develop')
-        run: |
-          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-          git tag "deployed-${TIMESTAMP}"
-          git push origin "deployed-${TIMESTAMP}"

@@ -4,7 +4,7 @@
 
 **Edit**: Files in `project/dev/` (modular ES modules)
 **Test**: Use `/preview-start` for dev server (ES modules require HTTP, not file://)
-**Deploy**: Push to `develop` → GitHub Actions deploys `project/dev/` → `project/prod/`
+**Deploy**: Push to `develop` → GitHub Actions deploys `project/dev/` → `/docs/` → GitHub Pages at https://ryuustark.github.io/universeportfolio/
 
 ---
 
@@ -22,13 +22,14 @@ project/dev/
 │   ├── wheel.js             ← 3D skill wheel controller + state
 │   ├── events.js            ← DOM event wiring
 │   └── main.js              ← App bootstrap (entry)
-project/prod/                ← Auto-deployed by CI/CD (never edit manually)
+docs/                        ← GitHub Pages deployment (auto-synced from project/dev/ by CI/CD)
+├── index.html
+├── css/
+└── js/
 .github/workflows/deploy.yaml
 Documentation/skill_tree_daniel.mmd ← Mermaid constellation overview
 Obsidian/                    ← Project memory vault (templates, skill trees, logs)
 ```
-
-**Legacy**: `project/dev/dev_portfolio.html` kept as fallback during migration — will be removed once the new structure is verified.
 
 ---
 
@@ -36,13 +37,13 @@ Obsidian/                    ← Project memory vault (templates, skill trees, l
 
 1. **Edit** files in `project/dev/`
 2. **Test** with `/preview-start` — ES modules need HTTP
-3. **Commit & Push**:
+3. **Commit & Push** to `develop` branch:
    ```bash
    git add project/dev/
    git commit -m "Brief description"
    git push origin develop
    ```
-4. **Deployment**: GitHub Actions copies `project/dev/` → `project/prod/` with timestamped backup.
+4. **Automatic Deployment**: GitHub Actions copies `project/dev/` → `/docs/` → GitHub Pages publishes at https://ryuustark.github.io/universeportfolio/
 
 ---
 
@@ -97,10 +98,16 @@ Reference docs:
 ## CI/CD Pipeline
 
 **Trigger**: Push to `develop` branch
-**Actions**: Backup current `project/prod/` → copy `project/dev/` (index.html + css/ + js/) → commit + tag
-**Rollback**: Restore from `project/prod/backups/backup-<timestamp>/`
+**Actions**: 
+- Copy `project/dev/` (index.html + css/ + js/) → `/docs/`
+- Commit changes to `/docs/`
+- GitHub Pages automatically publishes from `/docs/`
 
-See `.github/workflows/deploy.yaml` for details.
+**Live at**: https://ryuustark.github.io/universeportfolio/
+
+**Rollback**: Revert the commit that touched `/docs/` — GitHub Pages redeploys from previous commit.
+
+See `.github/workflows/deploy.yaml` for workflow details.
 
 ---
 

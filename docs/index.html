@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skills Constellation | Daniel Cortés</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="bg-nebula"></div>
+<div class="star-field"></div>
+
+<!-- SIDE MENU (desktop: fixed left column | mobile: top bar) -->
+<div class="side-menu">
+  <div class="menu-profile">
+    <div class="profile-title">Daniel Cortés</div>
+    <div class="profile-subtitle">Salesforce Dev · Release Mgr</div>
+  </div>
+  <div class="menu-contacts">
+    <a href="mailto:your.email@example.com" class="contact-item">
+      <span class="contact-icon">✉</span><span class="contact-label">Email</span>
+    </a>
+    <a href="https://linkedin.com" target="_blank" class="contact-item">
+      <span class="contact-icon">in</span><span class="contact-label">LinkedIn</span>
+    </a>
+    <a href="https://instagram.com" target="_blank" class="contact-item">
+      <span class="contact-icon">📷</span><span class="contact-label">Instagram</span>
+    </a>
+  </div>
+</div>
+
+<div class="ui-wrapper">
+  <header class="header">
+    <div class="header-title">⚔ Skills Constellation ⚔</div>
+    <div class="perk-points">
+      <div class="perk-diamond"></div>
+      <span>7 Trees Active</span>
+    </div>
+    <div class="header-character">
+      <span class="char-name">Daniel Cortés</span>
+      <span class="char-level">Senior · 6+ Years</span>
+    </div>
+  </header>
+
+  <div class="main-area">
+
+    <!-- WHEEL — always visible, fills screen on landing, shrinks in constellation mode -->
+    <div class="skill-wheel-wrap" id="wheel-wrap">
+      <div class="wheel-scene">
+        <div class="wheel-rotor" id="wheel-rotor"></div>
+      </div>
+      <div class="wf-l"></div>
+      <div class="wf-r"></div>
+    </div>
+
+    <!-- CONSTELLATION — revealed on wheel item click -->
+    <div class="constellation-panel" id="constellation-panel">
+      <div class="constellation-title" id="tree-title">Salesforce Core</div>
+      <div class="constellation-level" id="tree-level">Skill Level: 90</div>
+      <svg class="constellation-svg" id="constellation-svg" viewBox="0 0 600 500" preserveAspectRatio="none" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="glow-accent" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <radialGradient id="bg-radial" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(60,20,40,0.4)"/>
+            <stop offset="100%" stop-color="rgba(10,5,15,0)"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="300" cy="250" rx="250" ry="200" fill="url(#bg-radial)"/>
+        <g id="lines-layer"></g>
+        <g id="nodes-layer"></g>
+      </svg>
+      <div class="panel-divider"></div>
+      <div class="info-panel" id="info-panel">
+        <div class="info-panel-name" id="info-name">Select a node</div>
+        <div class="gold-sep"></div>
+        <div class="info-panel-desc" id="info-desc">Hover or click any star in the constellation to inspect that skill.</div>
+        <div class="info-panel-rank" id="info-rank"></div>
+        <button class="info-panel-btn" id="info-btn" disabled>—</button>
+      </div>
+      <div class="bottom-bar">
+        <span><span class="key-hint">Click wheel</span>Open</span>
+        <span><span class="key-hint">Scroll</span>Switch</span>
+        <span><span class="key-hint">Hover node</span>Inspect</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

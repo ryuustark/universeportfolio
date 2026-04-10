@@ -1,178 +1,121 @@
 ---
-title: Daniel Cortés — Professional Skill Tree
+title: Daniel Cortés — Skill Tree Constellation
 ---
 
 flowchart TB
-  classDef master fill:#3a0a14,stroke:#cc0000,stroke-width:2px,color:#e8d8f0,font-weight:bold
-  classDef expert fill:#2a0a1a,stroke:#cc0000,stroke-width:1.5px,color:#e8d8f0
-  classDef advanced fill:#1a0a20,stroke:#7700bb,stroke-width:1.5px,color:#c0a0d0
-  classDef learning fill:#0a0a15,stroke:#440066,stroke-width:1px,color:#806090,stroke-dasharray:5 4
+  classDef unlocked fill:#2a0a1a,stroke:#cc0000,stroke-width:1.5px,color:#e8d8f0
   classDef locked fill:#0a0508,stroke:#402030,stroke-width:1px,color:#504050,stroke-dasharray:5 4
+  classDef masterUnlocked fill:#3a0a14,stroke:#cc0000,stroke-width:2.5px,color:#e8d8f0,font-weight:bold
+  classDef masterLocked fill:#0a0508,stroke:#402030,stroke-width:2.5px,color:#504050,stroke-dasharray:5 4,font-weight:bold
 
-  %% ══════════════════════════════════════════
-  %%  ROOT
-  %% ══════════════════════════════════════════
-  ROOT([⚔ Daniel Cortés\nSalesforce Dev · Release Mgr\n6+ Years]):::master
+  subgraph SF["⚔ Salesforce Core · Lvl 90"]
+    direction TB
+    sf_root(["Salesforce"]):::masterUnlocked --> sf_apex["Apex"]:::unlocked
+    sf_root --> sf_admin["Administration"]:::unlocked
+    sf_apex --> sf_soql["SOQL / SOSL"]:::unlocked
+    sf_apex --> sf_policy["Policy Workflows"]:::unlocked
+    sf_admin --> sf_policy
+    sf_admin --> sf_vf["VF & PDF"]:::unlocked
+    sf_soql --> sf_email["Transact Emails"]:::unlocked
+    sf_policy --> sf_email
+    sf_policy --> sf_lwc["LWC"]:::unlocked
+    sf_vf --> sf_lwc
+    sf_email --> sf_master(["SF Master"]):::masterLocked
+    sf_lwc --> sf_master
+  end
 
-  ROOT --> SF
-  ROOT --> FRONT
-  ROOT --> INTEG
-  ROOT --> DEVOPS
-  ROOT --> AI
-  ROOT --> ORG
-  ROOT --> ART
+  subgraph INT["⚔ Integrations & Automation · Lvl 75"]
+    direction TB
+    int_root(["Integrations"]):::masterUnlocked --> int_rest["REST APIs"]:::unlocked
+    int_root --> int_flows["Flows"]:::unlocked
+    int_rest --> int_batch["Batch Jobs"]:::unlocked
+    int_rest --> int_notif["API Notifications"]:::unlocked
+    int_flows --> int_notif
+    int_flows --> int_sfapi["Salesforce APIs"]:::unlocked
+    int_batch --> int_micro["Microservices"]:::unlocked
+    int_notif --> int_micro
+    int_notif --> int_mid["Middleware"]:::locked
+    int_sfapi --> int_mid
+    int_micro --> int_master(["Integ Master"]):::masterLocked
+    int_mid --> int_master
+  end
 
-  %% ══════════════════════════════════════════
-  %%  1. SALESFORCE CORE
-  %% ══════════════════════════════════════════
-  SF([🔴 Salesforce Core\nLevel 90]):::master
+  subgraph DEV["⚔ DevOps & Release Mgmt · Lvl 80"]
+    direction TB
+    dev_root(["Release Mgmt"]):::masterUnlocked --> dev_cicd["CI/CD"]:::unlocked
+    dev_root --> dev_env["Env Management"]:::unlocked
+    dev_cicd --> dev_gh["GitHub Strategy"]:::unlocked
+    dev_cicd --> dev_gov["Change Gov"]:::unlocked
+    dev_env --> dev_gov
+    dev_env --> dev_qa["QA & Regression"]:::unlocked
+    dev_gh --> dev_hot["Incident Mgmt"]:::unlocked
+    dev_gov --> dev_hot
+    dev_gov --> dev_auto["Auto Deploy"]:::locked
+    dev_qa --> dev_auto
+    dev_hot --> dev_master(["DevOps Master"]):::masterLocked
+    dev_auto --> dev_master
+  end
 
-  SF --> SF_APEX
-  SF --> SF_ADMIN
-  SF --> SF_DATA
-  SF --> SF_POLICY
+  subgraph FE["⚔ UI / Front-End · Lvl 65"]
+    direction TB
+    fe_root(["Front-End"]):::masterUnlocked --> fe_vf["Visualforce"]:::unlocked
+    fe_root --> fe_lwc["LWC / Lightning"]:::unlocked
+    fe_vf --> fe_html["HTML / CSS"]:::unlocked
+    fe_vf --> fe_js["JavaScript"]:::unlocked
+    fe_lwc --> fe_js
+    fe_lwc --> fe_port["Portfolio Dev"]:::unlocked
+    fe_html --> fe_comp["Component Arch"]:::unlocked
+    fe_js --> fe_comp
+    fe_js --> fe_fw["JS Frameworks"]:::locked
+    fe_port --> fe_fw
+    fe_comp --> fe_master(["UI Master"]):::masterLocked
+    fe_fw --> fe_master
+  end
 
-  SF_APEX([Apex Development\nTriggers · Batch · Async]):::expert
-  SF_APEX --> SF_APEX_BATCH([Batch Jobs\nRenewals · Payments · Policy]):::expert
-  SF_APEX --> SF_APEX_ASYNC([Async Processing\nQueueable · Schedulable]):::expert
-  SF_APEX --> SF_APEX_TEST([Unit Testing\nTest Coverage · Mocking]):::advanced
+  subgraph AI["⚔ AI & Dev Tools · Lvl 40"]
+    direction TB
+    ai_root(["AI & Tools"]):::masterUnlocked --> ai_claude["Claude Code"]:::unlocked
+    ai_root --> ai_copilot["GitHub Copilot"]:::unlocked
+    ai_claude --> ai_prompt["Prompt Eng"]:::unlocked
+    ai_claude --> ai_wf["AI Workflows"]:::unlocked
+    ai_copilot --> ai_wf
+    ai_copilot --> ai_eth["AI Ethics"]:::unlocked
+    ai_prompt --> ai_res["Code Resilience"]:::unlocked
+    ai_wf --> ai_res
+    ai_wf --> ai_llm["LLM Dev"]:::locked
+    ai_eth --> ai_llm
+    ai_res --> ai_master(["AI Expert"]):::masterLocked
+    ai_llm --> ai_master
+  end
 
-  SF_ADMIN([Salesforce Admin\nConfig · Objects · Sales Cloud]):::expert
-  SF_ADMIN --> SF_ADMIN_SOQL([SOQL / SOSL\nComplex Queries · Optimization]):::expert
-  SF_ADMIN --> SF_ADMIN_CONFIG([Custom Objects\nLayouts · Validation Rules]):::expert
-  SF_ADMIN --> SF_ADMIN_CERT([Admin Certification\nRenewal in Progress]):::advanced
+  subgraph ORG["⚔ Organization & Agile · Lvl 70"]
+    direction TB
+    org_root(["Organization"]):::masterUnlocked --> org_agile["Agile / Scrum"]:::unlocked
+    org_root --> org_notion["Notion Systems"]:::unlocked
+    org_agile --> org_sprint["Sprint Mgmt"]:::unlocked
+    org_agile --> org_po["Product Owner"]:::unlocked
+    org_notion --> org_po
+    org_notion --> org_db["DB Design"]:::unlocked
+    org_sprint --> org_debt["Tech Debt"]:::unlocked
+    org_po --> org_debt
+    org_po --> org_dash["Dashboards"]:::locked
+    org_db --> org_dash
+    org_debt --> org_master(["Org Master"]):::masterLocked
+    org_dash --> org_master
+  end
 
-  SF_DATA([Data Management\nLarge-scale Ops · Loads]):::expert
-  SF_DATA --> SF_DATA_LOAD([Data Loads\nBulk API · Migration]):::expert
-  SF_DATA --> SF_DATA_ANALYSIS([Data Analysis\nReporting · Troubleshooting]):::advanced
-
-  SF_POLICY([Insurance Policy Workflows\nMulti-country · Custom Sales Flow]):::expert
-  SF_POLICY --> SF_POLICY_PDF([Visualforce PDF Certs\n~80% Legacy Tool Reduction]):::expert
-  SF_POLICY --> SF_POLICY_EMAIL([Transactional Emails\nTemplated · Dynamic]):::expert
-
-  %% ══════════════════════════════════════════
-  %%  2. FRONT-END / UI
-  %% ══════════════════════════════════════════
-  FRONT([🟣 UI / Front-End\nLevel 65]):::master
-
-  FRONT --> FRONT_VF
-  FRONT --> FRONT_LWC
-  FRONT --> FRONT_WEB
-
-  FRONT_VF([Visualforce\nPDFs · Pages · Emails]):::expert
-  FRONT_VF --> FRONT_VF_PDF([PDF Certificate Templates\nMulti-template · Migration]):::expert
-  FRONT_VF --> FRONT_VF_MIGRATE([Legacy Migration\nDeprecated → Current Standards]):::advanced
-
-  FRONT_LWC([LWC & Lightning\nComponents · Actions]):::expert
-  FRONT_LWC --> FRONT_LWC_DATA([Data Display Components\nComplex Object Relations]):::expert
-  FRONT_LWC --> FRONT_LWC_ACTION([Action Buttons\nApex-driven Processes]):::expert
-
-  FRONT_WEB([HTML / CSS / JS\nFront-end Fundamentals]):::advanced
-  FRONT_WEB --> FRONT_WEB_STYLE([Styling & Templates\nCerts · Emails]):::advanced
-  FRONT_WEB --> FRONT_WEB_JS([Client-side Logic\nJS · Apex Integration Calls]):::advanced
-  FRONT_WEB --> FRONT_WEB_PORT([Personal Portfolio\nVanilla · Dark Gothic Aesthetic]):::advanced
-
-  %% ══════════════════════════════════════════
-  %%  3. INTEGRATIONS & AUTOMATION
-  %% ══════════════════════════════════════════
-  INTEG([🔴 Integrations\nLevel 75]):::master
-
-  INTEG --> INTEG_API
-  INTEG --> INTEG_FLOW
-  INTEG --> INTEG_MICRO
-
-  INTEG_API([REST API Integrations\nDesign · Maintain · Iterate]):::expert
-  INTEG_API --> INTEG_API_EXT([External System Connections\nMulti-env · Evolving Reqs]):::expert
-  INTEG_API --> INTEG_API_SF([Salesforce APIs\nBulk · Streaming · REST]):::expert
-
-  INTEG_FLOW([Flows & Automation\nConditional Logic · Time Delays]):::expert
-  INTEG_FLOW --> INTEG_FLOW_API([API Notification Flows\nApex-triggered]):::expert
-  INTEG_FLOW --> INTEG_FLOW_PROC([Process Automation\nBusiness Rules · Async]):::expert
-
-  INTEG_MICRO([Microservices / Middleware\nBAU Touchpoint · Architecture]):::advanced
-  INTEG_MICRO --> INTEG_MICRO_SD([Solution Design\nGovernance · Best Practices]):::advanced
-  INTEG_MICRO --> INTEG_MICRO_PO([Product Owner Duties\nClient Comms · Business Analysis]):::advanced
-
-  %% ══════════════════════════════════════════
-  %%  4. DEVOPS & RELEASE MANAGEMENT
-  %% ══════════════════════════════════════════
-  DEVOPS([🟣 DevOps & Release\nLevel 80]):::master
-
-  DEVOPS --> DEVOPS_RM
-  DEVOPS --> DEVOPS_CICD
-  DEVOPS --> DEVOPS_ENV
-
-  DEVOPS_RM([Release Management\nScheduling · Governance]):::expert
-  DEVOPS_RM --> DEVOPS_RM_CHANGE([Change Governance\nApproval · Risk · Rollback]):::expert
-  DEVOPS_RM --> DEVOPS_RM_ISSUE([Issue Resolution\nDeployment Failures · Hotfixes]):::expert
-
-  DEVOPS_CICD([CI/CD Pipelines\nGitHub Branching · Automation]):::expert
-  DEVOPS_CICD --> DEVOPS_CICD_GH([GitHub Strategies\nBranching · PR Workflows]):::expert
-  DEVOPS_CICD --> DEVOPS_CICD_AUTO([Automated Deployments\nPipelines · Scripts]):::expert
-
-  DEVOPS_ENV([Environment Management\nINT · UAT · PROD]):::expert
-  DEVOPS_ENV --> DEVOPS_ENV_QA([QA & Regression\nUnit Tests · Deployment Testing]):::expert
-  DEVOPS_ENV --> DEVOPS_ENV_MIGRATE([Migration Lead\nTool → Salesforce · 4-month]):::expert
-
-  %% ══════════════════════════════════════════
-  %%  5. AI & TOOLS
-  %% ══════════════════════════════════════════
-  AI([🔴 AI & Dev Tools\nLevel 40]):::master
-
-  AI --> AI_CLAUDE
-  AI --> AI_COPILOT
-  AI --> AI_PROMPT
-
-  AI_CLAUDE([Claude Code\nAnthropian Certified]):::expert
-  AI_CLAUDE --> AI_CLAUDE_WF([Claude Workflows\nDev Integration · Automation]):::expert
-
-  AI_COPILOT([GitHub Copilot\nAI-assisted Dev]):::advanced
-  AI_COPILOT --> AI_COPILOT_RES([Code Resilience\nIndependence · Anti-fragility]):::advanced
-
-  AI_PROMPT([Prompt Engineering\nAI Fluency Certified]):::advanced
-  AI_PROMPT --> AI_PROMPT_ETH([AI Ethics & Safety\nAnthropian Framework]):::advanced
-  AI_PROMPT --> AI_PROMPT_FLOW([AI-assisted Workflows\nDev Acceleration]):::advanced
-
-  %% ══════════════════════════════════════════
-  %%  6. ORGANIZATION & AGILE
-  %% ══════════════════════════════════════════
-  ORG([🟣 Organization\nLevel 70]):::master
-
-  ORG --> ORG_AGILE
-  ORG --> ORG_NOTION
-  ORG --> ORG_MGMT
-
-  ORG_AGILE([Agile / Scrum\nSprints · Coordination]):::expert
-  ORG_AGILE --> ORG_AGILE_SPRINT([Sprint Management\nCross-team · Multi-country]):::expert
-  ORG_AGILE --> ORG_AGILE_STAKE([Stakeholder Updates\nClient Comms · Multi-country]):::advanced
-
-  ORG_NOTION([Notion Systems\nEssentials + Workflows Cert]):::expert
-  ORG_NOTION --> ORG_NOTION_DB([Database Design\nRelations · Views]):::expert
-  ORG_NOTION --> ORG_NOTION_WF([Workflow Automation\nButtons · Integrations]):::expert
-  ORG_NOTION --> ORG_NOTION_DASH([Dashboards & Templates\nInternal Tools]):::advanced
-
-  ORG_MGMT([Project Management\nEnd-to-end Ownership]):::expert
-  ORG_MGMT --> ORG_MGMT_FULL([Full Feature Ownership\nReq Gathering → Prod Release]):::expert
-  ORG_MGMT --> ORG_MGMT_DEBT([Technical Debt Reduction\nProcess Improvement]):::advanced
-
-  %% ══════════════════════════════════════════
-  %%  7. ART & 3D (Portfolio Side)
-  %% ══════════════════════════════════════════
-  ART([🔴 Creative / 3D\nLevel 35]):::master
-
-  ART --> ART_3DP
-  ART --> ART_MINI
-  ART --> ART_DESIGN
-
-  ART_3DP([3D Printing\nFDM · PLA/ABS/Resin]):::advanced
-  ART_3DP --> ART_3DP_FDM([FDM Printing\nPrinter Management]):::advanced
-  ART_3DP --> ART_3DP_SLICE([Slicing & Support\nOptimization]):::advanced
-  ART_3DP --> ART_3DP_RESIN([Resin Printing\nIn Progress]):::learning
-
-  ART_MINI([Miniature Painting\nTrench Crusade · Fantasy]):::advanced
-  ART_MINI --> ART_MINI_TC([Trench Crusade\nMinis · Lore]):::advanced
-  ART_MINI --> ART_MINI_FAN([Fantasy Miniatures\nDetailing · Basing]):::advanced
-
-  ART_DESIGN([Design & Layout\nPortfolio · Branding]):::learning
-  ART_DESIGN --> ART_DESIGN_PORT([Runar Studio\nUniverse Portfolio]):::learning
-  ART_DESIGN --> ART_DESIGN_BRAND([Brand Identity\nRunar Forge]):::learning
+  subgraph CRE["⚔ Creative & 3D · Lvl 35"]
+    direction TB
+    cre_root(["Creative"]):::masterUnlocked --> cre_fdm["FDM Printing"]:::unlocked
+    cre_root --> cre_mini["Miniature Paint"]:::unlocked
+    cre_fdm --> cre_slice["Slicing"]:::unlocked
+    cre_fdm --> cre_trench["Trench Crusade"]:::unlocked
+    cre_mini --> cre_trench
+    cre_mini --> cre_fan["Fantasy Minis"]:::unlocked
+    cre_slice --> cre_resin["Resin Print"]:::locked
+    cre_trench --> cre_resin
+    cre_trench --> cre_brand["Runar Studio"]:::unlocked
+    cre_fan --> cre_brand
+    cre_resin --> cre_master(["Creative Master"]):::masterLocked
+    cre_brand --> cre_master
+  end

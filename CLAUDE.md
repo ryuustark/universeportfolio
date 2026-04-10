@@ -2,75 +2,123 @@
 
 ## Quick Start
 
-**Edit**: `project/dev/dev_portfolio.html` (all HTML/CSS/JS in one file)  
-**Test**: Open in browser or use `/preview-start` for dev server  
-**Deploy**: Push to `develop` → GitHub Actions validates and deploys to `project/prod/portfolio.html`
-
----
-
-## Development Workflow
-
-1. **Edit** `project/dev/dev_portfolio.html`
-2. **Test** locally (browser or `/preview-start`)
-3. **Commit & Push**:
-   ```bash
-   git add project/dev/dev_portfolio.html
-   git commit -m "Brief description of change"
-   git push origin develop
-   ```
-4. **Deployment**: GitHub Actions auto-validates. On success, `develop` deploys to production.
+**Edit**: Files in `project/dev/` (modular ES modules)
+**Test**: Use `/preview-start` for dev server (ES modules require HTTP, not file://)
+**Deploy**: Push to `develop` → GitHub Actions deploys `project/dev/` → `project/prod/`
 
 ---
 
 ## File Structure
 
 ```
-project/
-├── dev/dev_portfolio.html      ← Active development (edit this)
-└── prod/portfolio.html         ← Live production (auto-updated by CI/CD)
-.github/workflows/
-└── deploy.yaml                 ← CI/CD pipeline (test + auto-deploy on develop push)
+project/dev/
+├── index.html               ← HTML shell (entry point)
+├── css/styles.css           ← All styles
+├── js/
+│   ├── data.js              ← Skill tree data model (pure data, no coords)
+│   ├── svg-utils.js         ← SVG createElementNS helpers
+│   ├── layout.js            ← Dynamic constellation positioning algorithm
+│   ├── tree-renderer.js     ← Renders constellation SVG + info panel
+│   ├── wheel.js             ← 3D skill wheel controller + state
+│   ├── events.js            ← DOM event wiring
+│   └── main.js              ← App bootstrap (entry)
+project/prod/                ← Auto-deployed by CI/CD (never edit manually)
+.github/workflows/deploy.yaml
+Documentation/skill_tree_daniel.mmd ← Mermaid constellation overview
+Obsidian/                    ← Project memory vault (templates, skill trees, logs)
 ```
+
+**Legacy**: `project/dev/dev_portfolio.html` kept as fallback during migration — will be removed once the new structure is verified.
+
+---
+
+## Development Workflow
+
+1. **Edit** files in `project/dev/`
+2. **Test** with `/preview-start` — ES modules need HTTP
+3. **Commit & Push**:
+   ```bash
+   git add project/dev/
+   git commit -m "Brief description"
+   git push origin develop
+   ```
+4. **Deployment**: GitHub Actions copies `project/dev/` → `project/prod/` with timestamped backup.
+
+---
+
+## Module Responsibilities (OOP mapping)
+
+| File | "Class" | Responsibility |
+|------|---------|----------------|
+| `data.js` | Model | Pure data — `trees` + `WHEEL_ITEMS`. No coordinates. |
+| `svg-utils.js` | Utility | Static SVG element helpers (`svgEl`, `starPts`) |
+| `layout.js` | LayoutEngine | Computes node positions dynamically (seeded radial growth) |
+| `tree-renderer.js` | TreeRenderer | Renders constellation SVG + info panel |
+| `wheel.js` | WheelController | 3D wheel state + navigation |
+| `events.js` | EventManager | Wires up DOM event listeners |
+| `main.js` | App | Bootstrap — imports + init calls |
+
+**State** lives in `wheel.js` as module-scoped variables with exported getters.
+
+---
+
+## Dynamic Constellation (`layout.js`)
+
+Nodes have NO hardcoded x/y — positions computed on every render by `computeLayout(nodes)`:
+
+1. Root node → bottom-center
+2. BFS places each child near parent centroid
+3. Seeded PRNG (hash of node id) → stable + organic positions
+4. Collision detection (min distance 36–50px based on density)
+5. Master node → top-center
+6. Density-aware spacing: 1–5 nodes → 90px, 6–10 → 70px, 11–15 → 55px
+7. Supports 1–15 nodes per tree
+
+**To add a skill:** Add a new entry to `trees.<category>.nodes` in `data.js` with `id`, `label`, `size`, `unlocked`, `desc`, `rank`, `parents[]`. The constellation re-layouts automatically.
 
 ---
 
 ## Code Style
 
-- **Pure vanilla**: No frameworks. HTML/CSS/JS all embedded in single file.
-- **Data structure**: `trees` object holds skill categories + nodes (id, label, x, y, desc, parents, unlocked)
-- **SVG constellations**: Dynamically generated from node coordinates. Connections = red lines between parent/child skills.
-- **Responsiveness**: CSS custom properties (`--color-*`, `--ease`) for theming. Mobile breakpoint: 768px.
-- **Comments**: Add references to MDN or docs when using non-obvious methods (e.g., `createElementNS()`, `cubic-bezier()`)
+- **ES Modules**: `import`/`export` — no bundler, native browser support
+- **Pure vanilla**: No frameworks, no npm dependencies
+- **SVG**: `createElementNS("http://www.w3.org/2000/svg", ...)` — [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS)
+- **3D Wheel**: CSS `rotateY()` + `translateZ()`, scroll debounce 650ms
+- **Responsive**: CSS custom properties (`--color-*`, `--ease`). Mobile breakpoint: 768px.
+- **Comments**: Reference MDN docs for non-obvious techniques
 
----
-
-## Key Techniques in This Project
-
-- **3D Wheel**: CSS `rotateY()` + scroll debounce (650ms)
-- **SVG Rendering**: `createElementNS('http://www.w3.org/2000/svg', 'svg')` for dynamic stars + lines
-- **Responsive Units**: `clamp()` for fluid scaling; `%` and `rem` for layouts
-- **State Management**: Plain JS objects. No external state library.
-
-Reference docs when adding complexity:
+Reference docs:
 - [MDN: SVG](https://developer.mozilla.org/en-US/docs/Web/SVG)
 - [MDN: CSS Transforms](https://developer.mozilla.org/en-US/docs/Web/CSS/transform)
-- [MDN: Flexbox](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout)
+- [MDN: ES Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
 
 ---
 
 ## CI/CD Pipeline
 
-**Trigger**: Push to `develop` branch  
-**Actions**: Validate HTML/CSS/JS → Copy `dev_portfolio.html` to `prod/portfolio.html` → Create timestamped backup  
-**Rollback**: Restore from `project/prod/backups/` if needed
+**Trigger**: Push to `develop` branch
+**Actions**: Backup current `project/prod/` → copy `project/dev/` (index.html + css/ + js/) → commit + tag
+**Rollback**: Restore from `project/prod/backups/backup-<timestamp>/`
 
-See `.github/workflows/deploy.yaml` for full workflow details.
+See `.github/workflows/deploy.yaml` for details.
+
+---
+
+## Obsidian Vault (`Obsidian/`)
+
+Project memory and skill tree documentation. Free-tier Obsidian only:
+- `Templates/` — Skill Node + Dev Log templates
+- `Skill Trees/<Category>/` — one folder per wheel category; `_<Title>.md` is the overview
+- `Project/Roadmap.md`, `Project/Architecture.md` — planning docs
+- `Dev Logs/` — daily notes
+
+See `Obsidian/README.md` for conventions.
 
 ---
 
 ## When You're Stuck
 
-- **Code behavior**: Read inline comments and check the `trees` data structure
-- **Styling**: Check CSS custom properties in `:root` block
-- **Browser issues**: Use `/preview-start` to test in Claude's dev environment
-- **Best practices**: Use `/code-review` to understand what "clean code" looks like
+- **Code behavior**: Read module JSDoc headers
+- **Styling**: Check CSS custom properties in `:root` block of `css/styles.css`
+- **Browser issues**: Use `/preview-start` — ES modules won't load from `file://`
+- **Layout weirdness**: Seeded PRNG is deterministic; if positions look wrong, check `layout.js` collision logic

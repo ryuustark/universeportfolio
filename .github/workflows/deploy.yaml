@@ -26,23 +26,31 @@ jobs:
       - name: Deploy to production (if enabled)
         if: github.event.inputs.deploy == 'true' || (github.event_name == 'push' && github.ref == 'refs/heads/develop')
         run: |
-          # Create backup of current prod version with timestamp
+          # Create timestamped backup of current prod (directory snapshot)
           TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-          mkdir -p project/prod/backups
-          cp project/prod/portfolio.html "project/prod/backups/portfolio-backup-${TIMESTAMP}.html"
+          BACKUP_DIR="project/prod/backups/backup-${TIMESTAMP}"
+          mkdir -p "${BACKUP_DIR}"
+          for item in project/prod/index.html project/prod/css project/prod/js project/prod/portfolio.html; do
+            if [ -e "$item" ]; then
+              cp -r "$item" "${BACKUP_DIR}/"
+            fi
+          done
 
-          # Copy dev version to prod
-          cp project/dev/dev_portfolio.html project/prod/portfolio.html
+          # Sync dev → prod (excluding backups dir)
+          rm -rf project/prod/css project/prod/js project/prod/index.html
+          cp project/dev/index.html project/prod/index.html
+          cp -r project/dev/css project/prod/css
+          cp -r project/dev/js project/prod/js
 
-          echo "✅ Deployment complete: dev_portfolio.html → portfolio.html"
-          echo "📦 Backup created: portfolio-backup-${TIMESTAMP}.html"
+          echo "✅ Deployment complete: project/dev → project/prod"
+          echo "📦 Backup created: ${BACKUP_DIR}"
 
       - name: Commit and push deployment
         if: github.event.inputs.deploy == 'true' || (github.event_name == 'push' && github.ref == 'refs/heads/develop')
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add project/prod/portfolio.html
+          git add project/prod/
           git commit -m "Deploy: update prod portfolio from dev [skip ci]" || echo "No changes to commit"
           git push
 
